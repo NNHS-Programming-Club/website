@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap" rel="stylesheet">
+        <link href="styles.css" rel="stylesheet">
+        <title>Trivia!</title>
+        <script>
+            //Letting DOM load first
+            document.addEventListener("DOMContentLoaded", function() {
+                //setting most of the elements we are accesing to variables
+                let MCQ_wrong = document.querySelectorAll(".incorrect");
+                let MCQ_correct = document.querySelector(".correct");
+                let SAQ = document.querySelector("input");
+                let SAQ_check = document.getElementById("SAQ");
+                // add an event listener for each wrong option on the MCQ
+                MCQ_wrong.forEach(function(element) {
+                    element.addEventListener("click", function() {
+                        //It will turn red and sent the text "incorrect"
+                        element.style.backgroundColor = "red";
+                        document.getElementById("response").textContent = "Incorrect";
+                    });
+                });
+                //same for MCQ correct
+                MCQ_correct.addEventListener("click", function() {
+                    //will turn Green and send the text "correct"
+                    MCQ_correct.style.backgroundColor  = "green";
+                    document.getElementById("response").textContent = "Correct!";
+                });
+                //Now checking for the SAQ
+                SAQ_check.addEventListener("click", function() {
+                    let response = document.getElementById("SAQ_response")
+                    if (SAQ.value == "Yale") {
+                        SAQ.style.backgroundColor = "green";
+                        response.textContent = "Correct!";
+                    } else {
+                        SAQ.style.backgroundColor = "red";
+                        response.textContent = "Incorrect";
+                    }
+                });
+
+            });
+        </script>
+    </head>
+    <body>
+        <div class="header">
+            <h1>Trivia!</h1>
+        </div>
+
+        <div class="container">
+            <div class="section">
+                <h2>Part 1: Multiple Choice </h2>
+                <hr>
+                <h3>What does Error 418 mean?</h3>
+                <p id = "response"></p>
+                <button class = "correct">I'm a teapot</button>
+                <button class = "incorrect">Page Not Found</button>
+                <button class = "incorrect">Bad Gateway</button>
+                <button class = "incorrect">Request Time Out</button>
+            </div>
+
+            <div class="section">
+                <h2>Part 2: Free Response</h2>
+                <hr>
+                <h3>Which school's website does safetyschool.org send you to?</h3>
+                <p id = "SAQ_response"></p>
+                <input type = "text"/>
+                <button id = "SAQ">Check Answer</button>
+            </div>
+        </div>
+    </body>
+</html>
