@@ -1,3 +1,20 @@
-.member {
-  /* yo help me css plzzzz */
+.member-name {
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.bio-container {
+  position: fixed;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.bio {
+  height: 50%;
+  width: 50%;
+
 }
