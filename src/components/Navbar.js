@@ -29,13 +29,13 @@ export default function Navbar() {
                 <Link to="/members" className="nav-link">Members</Link>
               </li>
               
-              <li className="nav-item d-flex align-items-center ml-auto">
+              <li className="nav-item d-flex align-items-center ms-auto">
                 <Link to="https://www.instagram.com/nnhsprogramming/" target="_blank"><img className="social-logo" src="../../images/instagram.png"/></Link>
               </li>
-              <li className="nav-item d-flex align-items-center ml-3">
+              <li className="nav-item d-flex align-items-center ms-2">
                 <Link to="https://www.facebook.com/groups/293459344434857/" target="_blank"><img className="social-logo" src="../../images/facebook.png"/></Link>
               </li>
-              <li className="nav-item d-flex align-items-center ml-3">
+              <li className="nav-item d-flex align-items-center ms-2 me-2">
                 <Link to="https://github.com/NNHS-Programming-Club/website" target="_blank"><img className="social-logo" src="../../images/github.png"/></Link>
               </li>
             </ul>
