@@ -39,7 +39,7 @@ export default function Members() {
               <div className="card bio">
                 <div className="card-header d-flex justify-content-between align-items-center p-3">
                   <h4 className="member-name mb-0">{members[openedId].name}</h4>
-                  <button type="button" className="btn-close" aria-label="Close" onClick={() => {close()}}></button>
+                  <button type="button" className="btn-close" aria-label="Close" onClick={close}></button>
                 </div>
                 <p className="card-text m-3">{members[openedId].bio}</p>
               </div>
