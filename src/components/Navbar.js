@@ -40,10 +40,15 @@ export default function Navbar() {
                 <Link to="/members" className="nav-link">Members</Link>
               </li>
 
+              {!darkMode &&
+                <img src="images/icons/dark-mode.svg" onMouseOver={this.src='images/icons/dark-mode-hover.svg'} onClick={(toggleTheme)}></img>
+              }
+
               <div class="form-check form-switch d-flex align-items-center ms-auto">
                 <input class="form-check-input me-1" type="checkbox" role="switch" id="flexSwitchCheckDefault" onClick={toggleTheme} />
                 <label class="form-check-label" for="flexSwitchCheckDefault">Dark Mode</label>
               </div>
+
               
               <li className="nav-item d-flex align-items-center ms-3">
                 <Link to="https://www.instagram.com/nnhsprogramming/" target="_blank"><img className="social-logo" src="../../images/instagram.png"/></Link>
