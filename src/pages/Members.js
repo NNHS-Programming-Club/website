@@ -8,7 +8,8 @@ export default function Members() {
     { id: 0, name: "Alan Tao", role: "Captain", bio: "Hello my name is Alan. I'm a sophomore who loves programming and music. I also like to play badminton and upload to my YouTube channel. " },
     { id: 1, name: "Alyssa Yasuhara", role: "Member", bio: "I like coding in python, and I am currently learning java. I love the community aspect of programming club and learning together with my peers!"},
     { id: 2, name: "Anastasia Gordivsky", role: "Member", bio: "I am interested in programming because you get to create cool things such as websites and a variety of computer programs, and you also get to make big changes in various industries by creating computer programs! I like how programming club teaches you a lot about computer science and the activities that we do every week! My other hobbies are violin, reading, spending time outdoors, swimming, and biking!" },
-    { id: 3, name: "Nathan Kessler", role: "Member", bio: "Hi, my name is Nathan. I primarily code in rust, but am also able to code in Python, Java, R, SQL, C (++), and HTML/JavaScript. I like theoretical programming, and enjoy creating algorithms. You will often see me doing math or on leetcode during programming club." }
+    { id: 3, name: "Nathan Kessler", role: "Member", bio: "Hi, my name is Nathan. I primarily code in rust, but am also able to code in Python, Java, R, SQL, C (++), and HTML/JavaScript. I like theoretical programming, and enjoy creating algorithms. You will often see me doing math or on leetcode during programming club." },
+    { id: 4, name: "Jason Smith", role: "Member", bio: "Hello, my name is Jason. I am a sophomore who likes Guitar and Programming. I primarily program in Python and Web Development Languages, but I am trying to branch out. This is my first year attending this club."}
   ];
 
   const [openedId, setOpenedId] = useState(null);
