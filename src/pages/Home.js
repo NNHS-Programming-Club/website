@@ -1,6 +1,6 @@
 import './Home.css'
 import React from 'react'
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useRef} from "react";
 
 const uppercaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
@@ -8,20 +8,26 @@ export default function Home() {
 
   const [prgmtitle, setPrgmTitle] = useState("Programming");
   const [clubtitle, setClubTitle] = useState("Club");
-  const [cubes, setCubes] = useState(Array(100).fill({binary: 1, border: "1px solid white"}));
+  const [cubes, setCubes] = useState(Array(100).fill({binary: 0, border: "1px solid white"}));
+  const cubesRef = useRef(cubes);
+  useEffect(() => {
+    cubesRef.current = cubes;
+  }, [cubes]);
   const [numbers] = useState(Array(10).fill(null).map((_, i) => i));
-  const max = 15;
-
 
   //cube animation
 
   const setOneCube = (i, newvars) => {
+    
     setCubes(prev => {
+
       let newCubes = [...prev]
-      console.log(newCubes)
       newCubes[i] = {binary: newvars.binary != null ? newvars.binary : prev[i].binary, border: newvars.border != null ? newvars.border : prev[i].border}
+
       return newCubes;
+
     })
+
   }
 
   const removeHighlight = (i) => {
@@ -29,12 +35,13 @@ export default function Home() {
   } 
 
   const blinkFound = (elem, i, start, color, n = null) => {
-    const data = {binary: null, border: null}
+    let data = {binary: null, border: null}
     if ( i <= start/2 && n != null) {
+        
         data.binary = n
     }
 
-    data.border = i % 2 == 0 ? "1px solid white" : `1px solid ${color}`
+    data.border = i % 2 === 0 ? "1px solid white" : `1px solid ${color}`
     setOneCube(elem, data)
 
     if (i > 0) {
@@ -43,17 +50,20 @@ export default function Home() {
     }
 
  const clean = (i, direction, len) => {
-    console.log(len, cubes)
-    const c = cubes[i] //individual cube
-    if (c.binary == 1) {
+
+    if (cubesRef.current[i] != null) {
+      if (cubesRef.current[i].binary === 1) {
         setOneCube(i, {binary: null, border: "1px solid green"})
         setTimeout(removeHighlight, 50, i)
-    }
-    else {
-        blinkFound(i, 5, 5, 'green', '1')
+      }
+      else {
+        blinkFound(i, 5, 5, 'green', 1)
+      }
     }
     
-    if (i + direction != cubes.length && i + direction != 0 && len - 1 > 0) {
+    
+    
+    if (i + direction !== cubes.length && i + direction !== 0 && len - 1 > 0) {
         setTimeout(clean, 50  , i + direction, direction, len - 1)
     }
   }
@@ -78,7 +88,7 @@ export default function Home() {
 
       const c = Math.floor(Math.random() * 100) // Random one of the objects
 
-      if (cubes[c].binary == 1) {
+      if (cubesRef.current[c].binary === 1) {
         remove(c)
       }
     }
@@ -106,7 +116,11 @@ export default function Home() {
   }
 
   useEffect(() => {
+
+    cubesRef.current = cubes;
+
     randomFunctions()
+    // clean(2, 1, 1590)
     RandomTitle(0, 12, 0, "Programming".split(""), prgmtitle, setPrgmTitle);
     RandomTitle(0, 5, 11*6, "Club".split(""), clubtitle, setClubTitle);
   }, []);
@@ -177,8 +191,8 @@ export default function Home() {
               </div>
               <div id="line"><p id="code"></p></div>
               <div id="line" className="i1">
-                <p id="code" className="comment">
-                  #Zero experience is required.
+                <p id="code">
+                  <span className="comment">#Zero experience is required.</span>
                 </p>
               </div>
               <div id="line"><p id="code"></p></div>
@@ -199,6 +213,9 @@ export default function Home() {
         </div>
       ))}
     </div>
+    </div>
+    <div className="first">
+
     </div>
     </div>
   )
