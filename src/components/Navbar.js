@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom'
 
 export default function Navbar() {
   const [darkMode, setDarkMode] = useState(false);
+  const [darkIconPath, setDarkIconPath] = useState("images/icons/dark-mode.svg");
+  const [lightIconPath, setLightIconPath] = useState("images/icons/light-mode.svg");
   const toggleTheme = () => {
     setDarkMode(!darkMode);
   };
@@ -41,14 +43,22 @@ export default function Navbar() {
               </li>
 
               {!darkMode &&
-                <img src="images/icons/dark-mode.svg" onMouseOver={this.src='images/icons/dark-mode-hover.svg'} onClick={(toggleTheme)}></img>
+                <img src={darkIconPath}
+                     onMouseOver={() => setDarkIconPath("images/icons/dark-mode-hover.svg")}
+                     onMouseLeave={() => setDarkIconPath("images/icons/dark-mode.svg")}
+                     onClick={(toggleTheme)}
+                     className='ms-auto'
+                />
               }
 
-              <div class="form-check form-switch d-flex align-items-center ms-auto">
-                <input class="form-check-input me-1" type="checkbox" role="switch" id="flexSwitchCheckDefault" onClick={toggleTheme} />
-                <label class="form-check-label" for="flexSwitchCheckDefault">Dark Mode</label>
-              </div>
-
+              {darkMode &&
+                <img src={lightIconPath}
+                     onMouseOver={() => setLightIconPath("images/icons/light-mode-hover.svg")}
+                     onMouseLeave={() => setLightIconPath("images/icons/light-mode.svg")}
+                     onClick={(toggleTheme)}
+                     className='ms-auto'
+                />
+              }
               
               <li className="nav-item d-flex align-items-center ms-3">
                 <Link to="https://www.instagram.com/nnhsprogramming/" target="_blank"><img className="social-logo" src="../../images/instagram.png"/></Link>
