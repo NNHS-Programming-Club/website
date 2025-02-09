@@ -3,7 +3,7 @@ import './Navbar.css'
 import { Link } from 'react-router-dom'
 
 export default function Navbar() {
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
   const [darkIconPath, setDarkIconPath] = useState("images/icons/dark-mode.svg");
   const [lightIconPath, setLightIconPath] = useState("images/icons/light-mode.svg");
   const toggleTheme = () => {
