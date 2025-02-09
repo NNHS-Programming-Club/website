@@ -42,7 +42,7 @@ export default function Members() {
                   <h4 className="member-name mb-0">{members[openedId].name}</h4>
                   <button type="button" className="btn-close" aria-label="Close" onClick={close}></button>
                 </div>
-                <div className="d-flex flex-row bio-content">
+                <div className="d-flex bio-content">
                   <img src={`images/members/${members[openedId].name}.jpg`} className="member-image"/>
                   <p className="card-text m-3">{members[openedId].bio}</p>
                 </div>
