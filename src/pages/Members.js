@@ -31,18 +31,21 @@ export default function Members() {
             <div className="card member p-2 m-2" style={{minWidth: 150}}>
               <h5 className="card-title">{member.name}</h5>
               <h6 className="card-subtitle text-body-secondary mb-2">{member.role}</h6>
-              <a href="#" class="btn btn-primary mt-auto" onClick={() => {open(member.id)}}>Read Bio</a>
+              <a type="button" class="btn btn-primary mt-auto" onClick={() => {open(member.id)}}>Read Bio</a>
             </div>
           ))}
 
           {(openedId!=null) && (
             <div className="bio-container d-flex align-items-center justify-content-center">
-              <div className="card bio">
-                <div className="card-header d-flex justify-content-between align-items-center p-3">
+              <div className="card bio d-flex">
+                <div className="card-header w-100 d-flex justify-content-between align-items-center p-3">
                   <h4 className="member-name mb-0">{members[openedId].name}</h4>
                   <button type="button" className="btn-close" aria-label="Close" onClick={close}></button>
                 </div>
-                <p className="card-text m-3">{members[openedId].bio}</p>
+                <div className="d-flex flex-row bio-content">
+                  <img src={`images/members/${members[openedId].name}.jpg`} className="member-image"/>
+                  <p className="card-text m-3">{members[openedId].bio}</p>
+                </div>
               </div>
             </div>
           )}

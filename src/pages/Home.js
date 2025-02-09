@@ -6,7 +6,7 @@ export default function Home() {
     <div className="home">
       <h1>STILL IN DEVELOPMENT</h1>
       <p>look at this cool old picture</p>
-      <img src="../images/progclubimage.png" alt="" />
+      <img src="images/progclubimage.png" alt="" />
     </div>
   )
 }

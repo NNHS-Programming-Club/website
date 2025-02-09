@@ -16,5 +16,18 @@
 .bio {
   height: 60%;
   width: 60%;
+}
 
+.bio-content {
+  height: calc(100% - 58px);
+}
+
+.member-image {
+  height: 100%;
+}
+
+.card-text {
+  text-overflow: ellipsis;
+  max-height: 100%;
+  font-size: 1.4vw;
 }
