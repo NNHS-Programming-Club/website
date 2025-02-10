@@ -14,7 +14,35 @@
 }
 
 .bio {
-  height: 50%;
-  width: 50%;
+  height: 60%;
+  width: 60%;
+}
 
+.bio-content {
+  flex-direction: row;
+  height: calc(100% - 58px);
+}
+
+.member-image {
+  height: 100%;
+}
+
+.card-text {
+  text-overflow: ellipsis;
+  max-height: 100%;
+}
+
+@media (max-width: 1000px) {
+  .bio-content {
+    align-items: center;
+    flex-direction: column;
+  }
+  .member-image {
+    max-width: 50%;
+    max-height: 50%;
+    height: auto
+  }
+  .card-text {
+    font-size: 9px;
+  }
 }
