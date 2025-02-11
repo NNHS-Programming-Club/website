@@ -46,3 +46,13 @@
     font-size: 9px;
   }
 }
+
+.green {
+  background-color: green;
+  border: 1px solid green;
+}
+
+.green:hover {
+  background-color: rgb(0, 109, 5);
+  border: 1px solid rgb(0, 109, 5);
+}
