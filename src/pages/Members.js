@@ -33,6 +33,9 @@ export default function Members() {
   return (
     <div>
       <h1>Members</h1>
+        <div>
+          <img src="images/programmingClub.jpg" className="club-img ps-5 pe-5 pt-3" />
+        </div>
         <div class="members-container d-flex flex-wrap p-5 align-items-center justify-content-center">
           {members.map((member) => (
             <div className="card member p-2 m-2" style={{minWidth: 150}}>

@@ -1,6 +1,6 @@
-.member-name {
-  font-size: 20px;
-  font-weight: 500;
+.club-img {
+  width: 100%;
+  height: auto;
 }
 
 .bio-container {
@@ -21,6 +21,11 @@
 .bio-content {
   flex-direction: row;
   height: calc(100% - 58px);
+}
+
+.member-name {
+  font-size: 20px;
+  font-weight: 500;
 }
 
 .member-image {
