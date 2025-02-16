@@ -1,16 +1,11 @@
 :root {
-  --dark: rgb(23,23,23);
-  --light-blue: #006fab;
-  --dark-blue: #005591;
-  --grey: #4E4E4E;
-  --purple: #7F2982;
-  --orange: #8d3100;
-  --yellow: #ab8f00;
+  /* https://colorhunt.co/palette/3a6351f2edd7e48257393232 */
+  --background: #393232;
+  --grey: rgb(40,40,40);
+  --primary: #E48257;
+  --offwhite: rgb(130,130,130);
+  --white: #F2EDD7;
   --jscomment: rgb(89, 153, 60);
-}
-
-body {
-  /* background-color: rgb(23,23,23); */
 }
 
 .introtext {
@@ -25,7 +20,7 @@ body {
 #first {
   width: 100%;
   height: calc(100vh - 58px);
-  background-color: rgb(23, 23, 23);
+  background-color: var(--background);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -44,7 +39,7 @@ body {
 }
 
 #minititle {
-  color: white;
+  color: var(--white);
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   font-weight: 100;
   padding-left: .3vw;
@@ -68,7 +63,7 @@ body {
 .hosted {
   margin: 0;
   font-weight: 100;
-  color: white;
+  color: var(--white);
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   padding-left: .15rem;
   padding-right: .3rem;
@@ -118,7 +113,7 @@ p {
   z-index: 6;
   width: auto;
   aspect-ratio: 1/1;
-  border: 1px solid white;
+  border: 1px solid var(--white);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -126,11 +121,11 @@ p {
 }
 
 .cube:hover {
-  background-color: green;
+  background-color: var(--primary);
 }
 
 .binary {
-  color: white;
+  color: var(--white);
   font-family: 'Courier New', Courier, monospace;
   font-weight: 550;
   user-select: none;
@@ -146,17 +141,17 @@ p {
 }
 
 #secondtitle {
-  color: white;
+  color: var(--white);
   margin-right: 500px;
 }
 
 #firsttitle {
-  color: green;
+  color: var(--primary);
 }
 
 #infoborder {
   width: 37vw;
-  background-color: rgb(40,40,40);
+  background-color: var(--grey);
   /* border-radius: 8px; */
   display: flex;
   align-items: center;
@@ -167,7 +162,7 @@ p {
 #info {
   height: calc(100% - 6px);
   width: calc(100% - 6px);
-  background-color: rgb(23,23,23);
+  background-color: var(--background);
   /* border-radius: 8px; */
   display: flex;
   flex-direction: row;
@@ -176,7 +171,7 @@ p {
 }
 
 #divider {
-  background-color: rgb(40,40,40);
+  background-color: var(--grey);
   width: 2px;
   height: calc(100% - 12px);
   }
@@ -201,7 +196,7 @@ p {
 }
 
 .numtext {
-  color: rgb(130,130,130);
+  color: var(--offwhite);
   /* color: rgb(100,100,100); */
   /* font-weight: 600; */
   font-family: 'Courier New', Courier, monospace;
@@ -229,13 +224,13 @@ p {
 }
 
 #code {
-  color: white;
+  color: var(--white);
   margin: 0;
 }
 
 .boldcode {
   font-weight: 600;
-  color: green !important;
+  color: var(--primary) !important;
 }
 
 .i1 {
@@ -248,13 +243,4 @@ p {
 
 .intro {
   user-select: none;
-}
-
-.scrollbar {
-  --height: 50px;
-  position: fixed;
-  width: 10px;
-  height: var(--height);
-  background-color: red;
-  top: calc(50% - calc(var(--height)/2));
 }

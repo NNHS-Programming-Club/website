@@ -115,13 +115,13 @@ export default function Home() {
   }, []);
 
   return (
-    <div>
+    <div className="home">
       <div id="first">
         <div className="introtext">
           <div className="intro">
             <div id="credit">
               <p className="hosted">Hosted By</p>
-              <img src="../images/tiger2.png" id="tigerimg" alt="" />
+              <img src="images/tiger2.png" id="tigerimg" alt="" />
               <p className="hosted">Newton North</p>
             </div>
             <h1 className="title" id="title">
