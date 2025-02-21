@@ -32,7 +32,7 @@ export default function Members() {
             <div className="card member p-2 m-2" style={{minWidth: 150}}>
               <h5 className="card-title">{member.name}</h5>
               <h6 className="card-subtitle text-body-secondary mb-2">{member.role}</h6>
-              <a type="button" class="btn btn-primary mt-auto green" onClick={() => {open(member.id)}}>Read Bio</a>
+              <a type="button" class="btn btn-primary mt-auto" onClick={() => {open(member.id)}}>Read Bio</a>
             </div>
           ))}
 

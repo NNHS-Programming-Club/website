@@ -7,7 +7,7 @@ const uppercaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 export default function Home() {
   const [prgmtitle, setPrgmTitle] = useState("Programming");
   const [clubtitle, setClubTitle] = useState("Club");
-  const [cubes, setCubes] = useState(Array(100).fill({ binary: 0, border: "1px solid white" }));
+  const [cubes, setCubes] = useState(Array(100).fill({ binary: 0, border: "1px solid #F2EDD7" }));
   const cubesRef = useRef(cubes);
   useEffect(() => {
     cubesRef.current = cubes;
@@ -26,7 +26,7 @@ export default function Home() {
   }
 
   const removeHighlight = (i) => {
-    setOneCube(i, { binary: null, border: "1px solid white" })
+    setOneCube(i, { binary: null, border: "1px solid #F2EDD7" })
   }
 
   const blinkFound = (elem, i, start, color, n = null) => {
@@ -36,7 +36,7 @@ export default function Home() {
       data.binary = n
     }
 
-    data.border = i % 2 === 0 ? "1px solid white" : `1px solid ${color}`
+    data.border = i % 2 === 0 ? "1px solid #F2EDD7" : `1px solid ${color}`
     setOneCube(elem, data)
 
     if (i > 0) {
@@ -47,11 +47,11 @@ export default function Home() {
   const clean = (i, direction, len) => {
     if (cubesRef.current[i] != null) {
       if (cubesRef.current[i].binary === 1) {
-        setOneCube(i, { binary: null, border: "1px solid green" })
+        setOneCube(i, { binary: null, border: "1px solid #3A6351" })
         setTimeout(removeHighlight, 50, i)
       }
       else {
-        blinkFound(i, 5, 5, 'green', 1)
+        blinkFound(i, 5, 5, '#3A6351', 1)
       }
     }
 
@@ -61,7 +61,7 @@ export default function Home() {
   }
 
   const remove = (elem) => {
-    blinkFound(elem, 6, 6, "#ff7800", 0)
+    blinkFound(elem, 6, 6, "#E48257", 0)
   }
 
   const randomFunctions = () => {

@@ -1,11 +1,17 @@
 :root {
   /* https://colorhunt.co/palette/3a6351f2edd7e48257393232 */
   --background: #393232;
-  --grey: rgb(40,40,40);
+  --grey: #4a4141;
   --primary: #E48257;
   --offwhite: rgb(130,130,130);
   --white: #F2EDD7;
   --jscomment: rgb(89, 153, 60);
+}
+
+[data-bs-theme="light"] {
+  --background: #F2EDD7;
+  --white: #393232;
+  --grey: #d8d3bd;
 }
 
 .introtext {
@@ -96,7 +102,7 @@ p {
 }
 
 #cubes::before {
-  background: radial-gradient(rgb(23,23,23,0), rgb(23,23,23,1) 80%);
+  background: radial-gradient(rgb(57,50,50,0), var(--background) 80%);
   /* width: 93.6%; */
   /* height: 104%; */
   width: 103%;
@@ -130,14 +136,6 @@ p {
   font-weight: 550;
   user-select: none;
   margin: 0;
-}
-
-#second {
-  width: 100%;
-  height: 55rem;
-  /* background-color: rgb(15,15,15); */
-  background: linear-gradient(rgb(23, 23, 23) 0%, rgb(15, 15, 15) 90%);
-  z-index: -1;
 }
 
 #secondtitle {
@@ -174,7 +172,7 @@ p {
   background-color: var(--grey);
   width: 2px;
   height: calc(100% - 12px);
-  }
+}
 
 #numbers {
   display: flex;
