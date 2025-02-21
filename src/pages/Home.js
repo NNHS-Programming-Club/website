@@ -7,7 +7,9 @@ const uppercaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 export default function Home() {
   const [prgmtitle, setPrgmTitle] = useState("Programming");
   const [clubtitle, setClubTitle] = useState("Club");
-  const [cubes, setCubes] = useState(Array(100).fill({ binary: 0, border: "1px solid #F2EDD7" }));
+  const red = "#E48257";
+  const green = "#3A6351";
+  const [cubes, setCubes] = useState(Array(100).fill({ binary: 0,  }));
   const cubesRef = useRef(cubes);
   useEffect(() => {
     cubesRef.current = cubes;
@@ -47,11 +49,11 @@ export default function Home() {
   const clean = (i, direction, len) => {
     if (cubesRef.current[i] != null) {
       if (cubesRef.current[i].binary === 1) {
-        setOneCube(i, { binary: null, border: "1px solid #3A6351" })
+        setOneCube(i, { binary: null, border: ("1px solid" + green) })
         setTimeout(removeHighlight, 50, i)
       }
       else {
-        blinkFound(i, 5, 5, '#3A6351', 1)
+        blinkFound(i, 5, 5, green, 1)
       }
     }
 
@@ -61,7 +63,7 @@ export default function Home() {
   }
 
   const remove = (elem) => {
-    blinkFound(elem, 6, 6, "#E48257", 0)
+    blinkFound(elem, 6, 6, red, 0)
   }
 
   const randomFunctions = () => {
