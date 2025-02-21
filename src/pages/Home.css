@@ -5,13 +5,15 @@
   --primary: #E48257;
   --offwhite: rgb(130,130,130);
   --white: #F2EDD7;
+  --green: #3A6351;
   --jscomment: rgb(89, 153, 60);
 }
 
 [data-bs-theme="light"] {
   --background: #F2EDD7;
-  --white: #393232;
   --grey: #d8d3bd;
+  --white: #393232;
+  --green: #56b189;
 }
 
 .introtext {
@@ -102,7 +104,7 @@ p {
 }
 
 #cubes::before {
-  background: radial-gradient(rgb(57,50,50,0), var(--background) 80%);
+  background: radial-gradient(rgb(57,50,50,0), var(--background) 77%);
   /* width: 93.6%; */
   /* height: 104%; */
   width: 103%;
@@ -119,11 +121,23 @@ p {
   z-index: 6;
   width: auto;
   aspect-ratio: 1/1;
-  border: 1px solid var(--white);
+  border: 2px solid var(--white);
+  transition: border-color 0.1s ease-in-out;
   display: flex;
   align-items: center;
   justify-content: center;
 }
+
+.cube.green {
+  border: 2px solid var(--green) !important;
+  transition: border 0.1s ease-in-out;
+}
+
+.cube.red {
+  border: 2px solid var(--primary) !important;
+  transition: border 0.1s ease-in-out;
+}
+
 
 .cube:hover {
   background-color: var(--primary);

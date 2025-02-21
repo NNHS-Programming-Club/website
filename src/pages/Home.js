@@ -7,9 +7,7 @@ const uppercaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 export default function Home() {
   const [prgmtitle, setPrgmTitle] = useState("Programming");
   const [clubtitle, setClubTitle] = useState("Club");
-  const red = "#E48257";
-  const green = "#3A6351";
-  const [cubes, setCubes] = useState(Array(100).fill({ binary: 0,  }));
+  const [cubes, setCubes] = useState(Array(100).fill({ binary: 0 }));
   const cubesRef = useRef(cubes);
   useEffect(() => {
     cubesRef.current = cubes;
@@ -21,39 +19,29 @@ export default function Home() {
   const setOneCube = (i, newvars) => {
     setCubes(prev => {
       let newCubes = [...prev]
-      newCubes[i] = { binary: newvars.binary != null ? newvars.binary : prev[i].binary, border: newvars.border != null ? newvars.border : prev[i].border }
+      newCubes[i] = {
+        binary: newvars.binary != null ? newvars.binary : prev[i].binary,
+        className: newvars.className != null ? newvars.className : prev[i].className
+      }
 
       return newCubes;
     })
   }
 
-  const removeHighlight = (i) => {
-    setOneCube(i, { binary: null, border: "1px solid #F2EDD7" })
-  }
-
-  const blinkFound = (elem, i, start, color, n = null) => {
-    let data = { binary: null, border: null }
-    if (i <= start / 2 && n != null) {
-
-      data.binary = n
-    }
-
-    data.border = i % 2 === 0 ? "1px solid #F2EDD7" : `1px solid ${color}`
-    setOneCube(elem, data)
-
-    if (i > 0) {
-      setTimeout(blinkFound, 100, elem, i - 1, start, color, n)
-    }
-  }
+  const highlightCube = (i, color, n = null) => {
+    let data = { binary: n, className: color };
+  
+    setOneCube(i, data);
+  
+    setTimeout(() => {
+      setOneCube(i, { binary: cubesRef.current[i].binary, className: "" }); // Remove color after a short delay
+    }, 500);
+  };
 
   const clean = (i, direction, len) => {
     if (cubesRef.current[i] != null) {
-      if (cubesRef.current[i].binary === 1) {
-        setOneCube(i, { binary: null, border: ("1px solid" + green) })
-        setTimeout(removeHighlight, 50, i)
-      }
-      else {
-        blinkFound(i, 5, 5, green, 1)
+      if (cubesRef.current[i].binary == 0) {
+        highlightCube(i, "green", 1)
       }
     }
 
@@ -63,13 +51,13 @@ export default function Home() {
   }
 
   const remove = (elem) => {
-    blinkFound(elem, 6, 6, red, 0)
+    highlightCube(elem, "red", 0)
   }
 
   const randomFunctions = () => {
     const stat = Math.random() * 100
 
-    if (stat < 30) {
+    if (stat < 25) {
       const start = Math.floor(Math.random() * 99)
       const length = Math.floor(Math.random() * 70 + 20)
       const dir = Math.random() > 0.5 ? 1 : -1
@@ -199,7 +187,7 @@ export default function Home() {
         </div>
         <div id="cubes">
           {cubes.map((c, i) => (
-            <div key={i} className='cube' style={{ border: c.border }}>
+            <div key={i} className={`cube ${c.className || ""}`}>
               <p className="binary">{c.binary}</p>
             </div>
           ))}
