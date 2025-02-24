@@ -45,7 +45,7 @@ export default function Home() {
       }
     }
 
-    if (i + direction !== cubes.length && i + direction !== 0 && len - 1 > 0) {
+    if (i + direction < cubes.length && i + direction >= 0 && len - 1 > 0) {
       setTimeout(clean, 50, i + direction, direction, len - 1)
     }
   }
