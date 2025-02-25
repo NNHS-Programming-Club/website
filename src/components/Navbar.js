@@ -68,10 +68,10 @@ export default function Navbar() {
               </li>
               <li className="nav-item d-flex align-items-center ms-2 me-2">
                 {!darkMode && (
-                  <Link to="https://github.com/NNHS-Programming-Club/website" target="_blank"><img className="social-logo" src="images/icons/github-dark.png"/></Link>
+                  <Link to="https://github.com/NNHS-Programming-Club" target="_blank"><img className="social-logo" src="images/icons/github-dark.png"/></Link>
                 )}
                 {darkMode && (
-                  <Link to="https://github.com/NNHS-Programming-Club/website" target="_blank"><img className="social-logo" src="images/icons/github-light.png"/></Link>
+                  <Link to="https://github.com/NNHS-Programming-Club" target="_blank"><img className="social-logo" src="images/icons/github-light.png"/></Link>
                 )}
               </li>
             </ul>
