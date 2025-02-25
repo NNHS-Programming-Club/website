@@ -1,0 +1,17 @@
+.project {
+  width: 33%;
+  padding: 5px;
+}
+
+.project:hover {
+  transform: scale(1.05);
+  transition: 0.3s;
+}
+
+.card-title {
+  text-decoration: none;
+}
+
+.card-title:hover {
+  color: #E48257;
+}

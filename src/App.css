@@ -1,7 +1,16 @@
 .App h1{
   text-align: center;
+  color: #E48257;
 }
 
 .hide {
   display: none;
+}
+
+[data-bs-theme="dark"] * {
+  color: #F2EDD7;
+}
+
+a:hover {
+  color: #E48257;
 }
