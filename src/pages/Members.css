@@ -15,7 +15,7 @@
 
 .bio {
   height: 60%;
-  width: 45%;
+  width: 50%;
   animation: fadeIn 0.2s ease-in-out;
 }
 
@@ -42,6 +42,7 @@
 
 .member-image {
   height: 100%;
+  max-width: 400px;
 }
 
 .card-text {
