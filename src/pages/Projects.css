@@ -1,6 +1,7 @@
 .project {
-  width: 33%;
+  width: 20%;
   padding: 5px;
+  cursor: pointer;
 }
 
 .project:hover {
