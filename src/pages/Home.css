@@ -240,11 +240,11 @@ p {
 }
 
 .boldcode {
-  font-weight: 600;
+  font-weight: bold;
   color: var(--primary) !important;
 }
 
-.i1 {
+.indent {
   margin-left: 10%;
 }
 
