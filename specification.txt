@@ -20,7 +20,7 @@ When you hover over the h1 text in my site, it will rotate between the colors of
 
 
 the notes folder contains old vanilla html code
-Uses react, react-dom, react-router-dom, bootstrap 4
+Uses react, react-dom, react-router-dom, bootstrap 5
 use npm install
 
 to preview the website use npm run start

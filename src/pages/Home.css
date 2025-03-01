@@ -63,9 +63,7 @@
 }
 
 #tigerimg {
-  width: 1vw;
-  margin-top: .25vw;
-  
+  width: 1.2vw;
 }
 
 .hosted {
@@ -240,11 +238,11 @@ p {
 }
 
 .boldcode {
-  font-weight: 600;
+  font-weight: bold;
   color: var(--primary) !important;
 }
 
-.i1 {
+.indent {
   margin-left: 10%;
 }
 
