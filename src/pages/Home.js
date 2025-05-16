@@ -178,14 +178,15 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </div>
-
-      <div id="cubes">
-        {cubes.map((c, i) => (
-          <div key={i} className={`cube ${c.className || ""}`}>
-            <p className="binary">{c.binary}</p>
-          </div>
-        ))}
+        <div id="cubes">
+          {cubes.map((c, i) => (
+            <div key={i}
+                 className={`cube ${c.className || ""}`}
+                 onClick={() => {c.binary == 1 ? highlightCube(i, "red", 0) : highlightCube(i, "green", 1)}}>
+              <p className="binary">{c.binary}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   )

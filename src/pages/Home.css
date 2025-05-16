@@ -127,18 +127,23 @@ p {
 }
 
 .cube.green {
-  border: 2px solid var(--green) !important;
+  border-style: solid;
+  border-color: var(--green) !important;
+  border-width: 2px;
   transition: border 0.1s ease-in-out;
 }
 
 .cube.red {
-  border: 2px solid var(--primary) !important;
+  border: solid;
+  border-color: var(--primary) !important;
+  border-width: 2px;
   transition: border 0.1s ease-in-out;
 }
 
 
 .cube:hover {
-  background-color: var(--primary);
+  border-width: 4px !important;
+  transition: border 0.1s ease-in-out;
 }
 
 .binary {
