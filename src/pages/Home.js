@@ -12,7 +12,7 @@ export default function Home() {
   useEffect(() => {
     cubesRef.current = cubes;
   }, [cubes]);
-  const [numbers] = useState(Array(10).fill(null).map((_, i) => i));
+  const [numbers] = useState(Array(8).fill(null).map((_, i) => i));
 
   //cube animation
 
@@ -106,8 +106,8 @@ export default function Home() {
 
   return (
     <div className="home">
-      <div id="first">
-        <div className="introtext">
+      <div id="wrapper">
+        <div className="text">
           <div className="intro">
             <div id="credit">
               <p className="hosted">Hosted By</p>
@@ -121,8 +121,10 @@ export default function Home() {
             </h1>
             <p id="minititle">Teaching ambitious students to code in various languages.</p>
           </div>
+          {/* Code Info Bbox */}
           <div id="infoborder">
             <div id="info">
+
               <div id="numbers">
                 {numbers.map((n, i) => (
                   <div className='num' key={i}>
@@ -130,57 +132,44 @@ export default function Home() {
                   </div>
                 ))}
               </div>
+
               <div id="divider"></div>
               <div id="lines">
 
                 <div id="line">
                   <p id="code">
-                    <span className="boldcode">
-                      function
-                    </span>
-                    {" "}
-                    info() {"{"}
+                    <span className="boldcode">const</span> info = {'{'}
                   </p>
                 </div>
-                <div id="line"><p id="code"></p></div>
-                <div id="line" className="i1">
+
+                <div id="line" className="indent">
                   <p id="code" >
-                    <span className="boldcode">var</span>
-                    {" "}
-                    RoomNumber = 471
+                    <span style={{ fontWeight: 'bold' }}>roomNumber</span>: <span style={{ color: 'CornflowerBlue' }}>471</span>,
                   </p>
                 </div>
-                <div id="line" className="i1">
+
+                <div id="line" className="indent">
                   <p id="code" >
-                    <span className="boldcode">
-                      var
-                    </span>
-                    {" "}
-                    Time = 4:00pm - 5:00pm;
+                    <span style={{ fontWeight: 'bold' }}>time</span>: <span style={{ color: "orange"}}>"4:00pm - 5:00pm"</span>,
                   </p>
                 </div>
-                <div id="line" className="i1">
+
+                <div id="line" className="indent">
                   <p id="code" >
-                    <span className="boldcode">
-                      var
-                    </span>
-                    {" "}
-                    Day = Monday;
+                    <span style={{ fontWeight: 'bold' }}>day</span>: <span style={{ color: "orange"}}>"Monday"</span>
                   </p>
                 </div>
-                <div id="line"><p id="code"></p></div>
-                <div id="line" className="i1">
+
+                <div id="line" className="indent">
                   <p id="code">
-                    <span className="comment">#Zero experience is required.</span>
+                    <span className="comment">// Zero experience required!</span>
                   </p>
                 </div>
+                <div id="line"><p id="code">{"};"}</p></div>
                 <div id="line"><p id="code"></p></div>
-                <div id="line" className="i1">
-                  <p id="code">
-                    <span className="boldcode">return</span><span>;</span>
-                  </p>
-                </div>
-                <div id="line"><p id="code">{"}"}</p></div>
+                <div id="line"><p id="code">
+                  <span style={{ color: 'lightcoral' }}>print</span>(info);
+                </p></div>
               </div>
             </div>
           </div>
