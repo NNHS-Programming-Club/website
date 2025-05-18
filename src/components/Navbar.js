@@ -30,16 +30,13 @@ export default function Navbar() {
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav d-flex w-100">
               <li className="nav-item">
-                <Link to="/about" className="nav-link">About</Link>
-              </li>
-              <li className="nav-item">
-                <Link to="/meetings" className="nav-link">Meetings</Link>
+                <Link to="/members" className="nav-link">Members</Link>
               </li>
               <li className="nav-item">
                 <Link to="/projects" className="nav-link">Projects</Link>
               </li>
               <li className="nav-item">
-                <Link to="/members" className="nav-link">Members</Link>
+                <Link to="/about" className="nav-link">About</Link>
               </li>
 
               {!darkMode &&

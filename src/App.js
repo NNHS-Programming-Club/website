@@ -9,8 +9,8 @@ import Navbar from './components/Navbar'
 import Home from './pages/Home'
 import About from './pages/About'
 import Projects from './pages/Projects'
-import Meetings from './pages/Meetings'
 import Members from './pages/Members'
+import Error404 from './pages/Error404'
 
 function App() {
   return (
@@ -21,8 +21,8 @@ function App() {
           <Route path = "/" element = {<Home />} />
           <Route path = "/about" element = {<About />} />
           <Route path = "/projects" element = {<Projects />} />
-          <Route path = "/meetings" element = {<Meetings />} />
           <Route path = "/members" element = {<Members />} />
+          <Route path = "/*" element = { <Error404 /> } />
         </Routes>
       </BrowserRouter>
     </div>

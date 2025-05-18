@@ -22,7 +22,6 @@
   background-color: var(--background);
   display: flex;
   align-items: center;
-  justify-content: space-evenly;
 }
 
 .text {
@@ -31,6 +30,9 @@
   justify-content: space-evenly;
   height: 100%;
   padding: 20px;
+  margin-left: 5%;
+  margin-right: 5%;
+  width: 45%;
 }
 
 .title {    
@@ -261,5 +263,8 @@
   }
   .title {
     font-size: 50px;
+  }
+  .text {
+    width: 100%;
   }
 }
