@@ -1,5 +1,11 @@
+.wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+}
+
 .project {
-  width: 20%;
+  width: 30%;
   padding: 5px;
   cursor: pointer;
 }
@@ -15,4 +21,10 @@
 
 .card-title:hover {
   color: #E48257;
+}
+
+@media only screen and (max-width: 770px) {
+  .project {
+    width: 90%;
+  }
 }

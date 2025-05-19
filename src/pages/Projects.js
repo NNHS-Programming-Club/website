@@ -13,8 +13,8 @@ export default function Projects() {
 
   return (
     <div>
-      <h1>Projects</h1>
-      <div className="d-flex flex-wrap justify-content-center p-4">
+      <h1 className="mb-4">Projects</h1>
+      <div className="wrapper">
         {projects.map((project) => (
           <div className="card project m-2" onClick={() => {window.open(project.link)}}>
             <div className="card-body" href={project.link} target="_blank">
