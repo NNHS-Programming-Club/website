@@ -39,6 +39,10 @@ export default function Navbar() {
                 <Link to="/about" className="nav-link">About</Link>
               </li>
 
+              <li className="nav-item">
+                <Link to="/events" className="nav-link">Events</Link>
+              </li>
+
               {!darkMode &&
                 <img src={darkIconPath}
                      onMouseOver={() => setDarkIconPath("images/icons/dark-mode-hover.svg")}
