@@ -9,3 +9,9 @@
 .cardContainer div.card {
   width: 50%;
 }
+
+@media (max-width: 1000px) {
+  .cardContainer div.card {
+    width: 90%;
+  }
+}

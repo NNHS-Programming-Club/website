@@ -16,11 +16,17 @@ export default function Events() {
               <li>Location: NNHS Cafeteria</li>
             </ul>
 
-            <p className="card-text">Join us for the NNHS Step-up Day 2025, where incoming freshmen can learn about the programming club and meet current members!</p>
+            <p className="">Join us for the NNHS Step-up Day 2025, where incoming freshmen can learn about the programming club and meet current members!</p>
 
             <p><strong>Signatures from rising 9th graders</strong></p>
             <ul>
-              <li>...</li>
+              <li>Addison</li>
+              <li>Zarate</li>
+              <li>Jaydon</li>
+              <li>Sebastian Sawicki</li>
+              <li>Rithvik Lal</li>
+              <li>Yakov Bogorad</li>
+              <li>Kelly Mongkhonlertsirikul</li>
             </ul>
           </div>
         </div>

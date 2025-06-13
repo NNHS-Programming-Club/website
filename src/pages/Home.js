@@ -39,8 +39,8 @@ export default function Home() {
   };
 
   const clean = (i, direction, len) => {
-    if (cubesRef.current[i] != null) {
-      if (cubesRef.current[i].binary == 0) {
+    if (cubesRef.current[i] !== null) {
+      if (cubesRef.current[i].binary === 0) {
         highlightCube(i, "green", 1)
       }
     }
@@ -178,7 +178,7 @@ export default function Home() {
           {cubes.map((c, i) => (
             <div key={i}
                  className={`cube ${c.className || ""}`}
-                 onClick={() => {c.binary == 1 ? highlightCube(i, "red", 0) : highlightCube(i, "green", 1)}}>
+                 onClick={() => {c.binary === 1 ? highlightCube(i, "red", 0) : highlightCube(i, "green", 1)}}>
               <p className="binary">{c.binary}</p>
             </div>
           ))}

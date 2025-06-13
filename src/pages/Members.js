@@ -38,14 +38,14 @@ export default function Members() {
     <div>
       <h1>Members</h1>
         <div>
-          <img src="images/programmingClub.jpg" className="club-img ps-5 pe-5 pt-3" />
+          <img src="images/programmingClub.jpg" className="club-img ps-5 pe-5 pt-3" alt="all members"/>
         </div>
         <div className="members-container d-flex flex-wrap p-5 align-items-center justify-content-center">
           {members.map((member) => (
             <div key={member.id} className="card member p-2 m-2" style={{minWidth: 150}}>
               <h5 className="card-title">{member.name}</h5>
               <h6 className="card-subtitle text-body-secondary mb-2">{member.role}</h6>
-              <a type="button" className="btn btn-primary mt-auto" onClick={() => {open(member.id)}}>Read Bio</a>
+              <button type="button" className="btn btn-primary mt-auto" onClick={() => {open(member.id)}}>Read Bio</button>
             </div>
           ))}
 
@@ -57,7 +57,7 @@ export default function Members() {
                   <button type="button" className="btn-close" aria-label="Close" onClick={close}></button>
                 </div>
                 <div className="d-flex bio-content">
-                  <img src={`images/members/${members[openedId].name}.jpg`} className="member-image"/>
+                  <img src={`images/members/${members[openedId].name}.jpg`} className="member-image" alt="member headshot"/>
                   <p className="card-text m-3">{members[openedId].bio}</p>
                 </div>
               </div>
