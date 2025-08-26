@@ -119,7 +119,7 @@ export default function Home() {
               {' '}
               <span id="secondtitle">{clubtitle}</span>
             </h1>
-            <p id="minititle">Teaching ambitious students to code in various languages.</p>
+            <p id="minititle">Bringing programmers together at Newton North since January 1st, 1970</p>
           </div>
           {/* Code Info Bbox */}
           <div id="infoborder">
