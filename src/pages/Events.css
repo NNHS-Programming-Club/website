@@ -1,0 +1,17 @@
+.cardContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+}
+
+.cardContainer div.card {
+  width: 50%;
+}
+
+@media (max-width: 1000px) {
+  .cardContainer div.card {
+    width: 90%;
+  }
+}

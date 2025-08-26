@@ -20,7 +20,7 @@ export default function Projects() {
             <div className="card-body" href={project.link} target="_blank">
               <h4 className="card-title">{project.name}</h4>
               <h6 class="card-subtitle mb-3 text-muted">{project.author}</h6>
-              <p className="card-text mt-2">{project.description}</p>
+              <p className="mt-2">{project.description}</p>
             </div>
           </div>
         ))}
