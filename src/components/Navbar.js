@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import './Navbar.css'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../contexts/authContext';
+import { doSignOut } from '../firebase/auth';
 
 export default function Navbar() {
   const [darkMode, setDarkMode] = useState(true);
@@ -9,6 +11,9 @@ export default function Navbar() {
   const toggleTheme = () => {
     setDarkMode(!darkMode);
   };
+
+  const { userLoggedIn } = useAuth();
+  const navigate = useNavigate()
 
   useEffect(() => {
     const htmlElement = document.querySelector('html');
@@ -41,6 +46,26 @@ export default function Navbar() {
               <li className="nav-item">
                 <Link to="/events" className="nav-link">Events</Link>
               </li>
+              
+              {userLoggedIn ? 
+                <div className="d-flex">
+                  <li className="nav-item">
+                    <button onClick={() => { doSignOut().then(() => { navigate('/login') }) }} className="nav-link">Logout</button>
+                  </li>
+                </div>
+
+                :
+                
+                <div className="d-flex">
+                  <li className="nav-item">
+                    <Link to="/login" className="nav-link">Login</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link to="/register" className="nav-link">Sign Up</Link>
+                  </li>
+                </div>
+              }
+              
 
               {!darkMode &&
                 <img src={darkIconPath}

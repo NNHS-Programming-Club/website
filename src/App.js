@@ -12,21 +12,28 @@ import Projects from './pages/Projects'
 import Members from './pages/Members'
 import Events from './pages/Events';
 import Error404 from './pages/Error404'
+import Login from './components/Login';
+import Register from './components/Register';
+import { AuthProvider } from './contexts/authContext';
 
 function App() {
   return (
     <div className="App">
-      <BrowserRouter>
-        <Navbar />
-        <Routes>
-          <Route path = "/" element = {<Home />} />
-          <Route path = "/about" element = {<About />} />
-          <Route path = "/projects" element = {<Projects />} />
-          <Route path = "/members" element = {<Members />} />
-          <Route path = "/events" element = {<Events />} />
-          <Route path = "/*" element = { <Error404 /> } />
-        </Routes>
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter>
+          <Navbar />
+          <Routes>
+            <Route path = "/" element = {<Home />} />
+            <Route path = "/about" element = {<About />} />
+            <Route path = "/projects" element = {<Projects />} />
+            <Route path = "/members" element = {<Members />} />
+            <Route path = "/events" element = {<Events />} />
+            <Route path = "/login" element = {<Login />} />
+            <Route path = "/register" element = {<Register />} />
+            <Route path = "/*" element = { <Error404 /> } />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
     </div>
   );
 }
