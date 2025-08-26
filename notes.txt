@@ -1,0 +1,3 @@
+Firebase Auth + React Tutorial:
+
+https://www.youtube.com/watch?v=WpIDez53SK4
