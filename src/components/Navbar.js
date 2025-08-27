@@ -50,6 +50,9 @@ export default function Navbar() {
               {userLoggedIn ? 
                 <div className="d-flex">
                   <li className="nav-item">
+                    <Link to="/" className="nav-link"><img className="social-logo" src="images/icons/user.svg" alt="User icon" /></Link>
+                  </li>
+                  <li className="nav-item">
                     <button onClick={() => { doSignOut().then(() => { navigate('/login') }) }} className="nav-link">Logout</button>
                   </li>
                 </div>
@@ -58,7 +61,7 @@ export default function Navbar() {
                 
                 <div className="d-flex">
                   <li className="nav-item">
-                    <Link to="/login" className="nav-link">Login</Link>
+                    <Link to="/login" className="nav-link">Log In</Link>
                   </li>
                   <li className="nav-item">
                     <Link to="/register" className="nav-link">Sign Up</Link>

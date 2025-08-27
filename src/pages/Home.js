@@ -39,7 +39,7 @@ export default function Home() {
   };
 
   const clean = (i, direction, len) => {
-    if (cubesRef.current[i] !== null) {
+    if (cubesRef.current[i] !== null && cubesRef.current[i] !== undefined) {
       if (cubesRef.current[i].binary === 0) {
         highlightCube(i, "green", 1)
       }
@@ -119,7 +119,7 @@ export default function Home() {
               {' '}
               <span id="secondtitle">{clubtitle}</span>
             </h1>
-            <p id="minititle">Bringing programmers together at Newton North since January 1st, 1970</p>
+            <p id="minititle">Bringing programmers together at Newton North High School since January 1st, 1970</p>
           </div>
           {/* Code Info Bbox */}
           <div id="infoborder">

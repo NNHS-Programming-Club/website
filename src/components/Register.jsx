@@ -19,7 +19,52 @@ const Register = () => {
     e.preventDefault()
     if (!isRegistering) {
       setIsRegistering(true)
-      await doCreateUserWithEmailAndPassword(email, password)
+      setErrorMessage('') // Clear any previous error messages
+      
+      // Check email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      if (!emailRegex.test(email)) {
+        setErrorMessage('Please enter a valid email address')
+        setIsRegistering(false)
+        return
+      }
+      
+      // Check password length
+      if (password.length < 6) {
+        setErrorMessage('Password must be at least 6 characters long')
+        setIsRegistering(false)
+        return
+      }
+      
+      // Check if passwords match
+      if (password !== confirmPassword) {
+        setErrorMessage('Passwords do not match')
+        setIsRegistering(false)
+        return
+      }
+      
+      try {
+        await doCreateUserWithEmailAndPassword(email, password)
+        // Registration successful - user will be redirected
+      } catch (error) {
+        console.error('Registration error:', error)
+        // Handle different types of Firebase auth errors
+        let errorMsg = 'An error occurred during registration'
+        if (error.code === 'auth/email-already-in-use') {
+          errorMsg = 'An account with this email already exists'
+        } else if (error.code === 'auth/invalid-email') {
+          errorMsg = 'Invalid email address'
+        } else if (error.code === 'auth/weak-password') {
+          errorMsg = 'Password is too weak. Please choose a stronger password'
+        } else if (error.code === 'auth/operation-not-allowed') {
+          errorMsg = 'Email/password accounts are not enabled. Please contact support'
+        } else if (error.code === 'auth/too-many-requests') {
+          errorMsg = 'Too many attempts. Please try again later'
+        }
+        setErrorMessage(errorMsg)
+      } finally {
+        setIsRegistering(false)
+      }
     }
   }
 
@@ -48,7 +93,7 @@ const Register = () => {
                 autoComplete='email'
                 required
                 value={email} onChange={(e) => { setEmail(e.target.value) }}
-                className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:indigo-600 shadow-sm rounded-lg transition duration-300"
+                className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg transition duration-300"
               />
             </div>
 
@@ -93,7 +138,7 @@ const Register = () => {
             </button>
             <div className="text-sm text-center">
               Already have an account? {'   '}
-              <Link to={'/login'} className="text-center text-sm hover:underline font-bold">Continue</Link>
+              <Link to={'/login'} className="text-center text-sm hover:underline font-bold">Log In</Link>
             </div>
           </form>
         </div>

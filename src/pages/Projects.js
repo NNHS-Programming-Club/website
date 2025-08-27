@@ -19,7 +19,7 @@ export default function Projects() {
           <div className="card project m-2" onClick={() => {window.open(project.link)}}>
             <div className="card-body" href={project.link} target="_blank">
               <h4 className="card-title">{project.name}</h4>
-              <h6 class="card-subtitle mb-3 text-muted">{project.author}</h6>
+              <h6 className="card-subtitle mb-3 text-muted">{project.author}</h6>
               <p className="mt-2">{project.description}</p>
             </div>
           </div>
