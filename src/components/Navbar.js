@@ -46,6 +46,9 @@ export default function Navbar() {
               <li className="nav-item">
                 <Link to="/events" className="nav-link">Events</Link>
               </li>
+              <li className="nav-item">
+                <Link to="/daily-problem" className="nav-link">Daily Problem</Link>
+              </li>
               
               {userLoggedIn ? 
                 <div className="d-flex">

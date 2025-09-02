@@ -15,6 +15,7 @@ import Error404 from './pages/Error404'
 import Login from './components/Login';
 import Register from './components/Register';
 import { AuthProvider } from './contexts/authContext';
+import DailyProblem from './pages/DailyProblem';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
             <Route path = "/projects" element = {<Projects />} />
             <Route path = "/members" element = {<Members />} />
             <Route path = "/events" element = {<Events />} />
+            <Route path = "/daily-problem" element = {<DailyProblem />} />
             <Route path = "/login" element = {<Login />} />
             <Route path = "/register" element = {<Register />} />
             <Route path = "/*" element = { <Error404 /> } />
