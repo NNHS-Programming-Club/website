@@ -258,14 +258,24 @@
 
 
 @media only screen and (max-width: 770px) {
-  #cubes {
-    display: none;
-  }
   .title {
     font-size: 50px;
   }
   .text {
     width: 100%;
     margin-bottom: 58px;
+  }
+  #cubes {
+    display: none;
+  }
+}
+
+@media only screen and (max-width: 1099px) and (min-width: 771px) {
+  #cubes {
+    display: none;
+  }
+  .text {
+    width: 70%;
+    /* margin-bottom: 58px; */
   }
 }
