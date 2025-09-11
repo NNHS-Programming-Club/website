@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Navigate, Link } from 'react-router-dom'
 import { doSignInWithEmailAndPassword, doSignInWithGoogle } from '../firebase/auth'
 import { useAuth } from '../contexts/authContext'
+import "./login.css"
 
 const Login = () => {
   const { userLoggedIn } = useAuth()
@@ -78,9 +79,10 @@ const Login = () => {
     <div>
       {userLoggedIn && (<Navigate to={'/'} replace={true} />)}
 
-      <main className="w-full h-screen flex self-center place-content-center place-items-center">
-        <div className="w-96 text-gray-600 space-y-5 p-4 shadow-xl border rounded-xl">
-          <div className="text-center">
+      <main className="mainlogin">
+        <div className="loginCard">
+          <div className='cardWrapper'>
+            <div className="text-center">
             <div className="mt-2">
               <h3 className="text-gray-800 text-xl font-semibold sm:text-2xl">Welcome Back</h3>
             </div>
@@ -151,6 +153,8 @@ const Login = () => {
             </svg>
             {isSigningIn ? 'Signing In...' : 'Continue with Google'}
           </button>
+          </div>
+          
         </div>
       </main>
     </div>

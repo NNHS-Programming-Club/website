@@ -1,0 +1,26 @@
+.mainlogin {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: calc(550px + 10vh);
+}
+
+.loginCard {
+    border: 1px solid #b6b6b6; /* Tailwind's gray-300 */
+    border-radius: 30px;
+    width: 500px;
+    height: 550px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.cardWrapper {
+    width: calc(100% - 50px);
+    height: calc(100% - 50px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
