@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './DailyProblem.css';
 import { makeSubmissionAndGetToken, getSubmission } from '../api/judge0-api';
 import { GET_SUBMISSION_DELAY } from '../constants';
+import CodeEditor from '../components/CodeEditor';
 
 export default function DailyProblem() {
   // State management
@@ -142,7 +143,6 @@ export default function DailyProblem() {
   return (
     <div className="dailyProblem">
       <h1>Daily Problem</h1>
-
       <div className="form-group">
         <label htmlFor="language">Select Language:</label>
         <select 
@@ -158,11 +158,11 @@ export default function DailyProblem() {
       
       <div className="form-group">
         <label htmlFor="code">Code:</label>
-        <textarea 
-          id="code" 
-          placeholder="Enter your code here..."
+        <CodeEditor 
           value={code}
-          onChange={(e) => setCode(e.target.value)}
+          onChange={setCode}
+          languageId={language}
+          height="300px"
         />
       </div>
       

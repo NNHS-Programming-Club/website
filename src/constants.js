@@ -6,4 +6,10 @@ const codeLanguageMap = {
   java: 91 // (JDK 17.0.6)
 }
 
-export { GET_SUBMISSION_DELAY, codeLanguageMap };
+const monacoLanguageMap = {
+  '92': 'python',
+  '54': 'cpp',
+  '91': 'java'
+}
+
+export { GET_SUBMISSION_DELAY, codeLanguageMap, monacoLanguageMap };
