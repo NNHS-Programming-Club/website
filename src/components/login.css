@@ -7,20 +7,49 @@
 }
 
 .loginCard {
-    border: 1px solid #b6b6b6; /* Tailwind's gray-300 */
+    /* border: 2px solid #e48257;*/
+    background-color: #2e2828;
     border-radius: 30px;
     width: 500px;
     height: 550px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
+    
 }
 
 .cardWrapper {
     width: calc(100% - 50px);
     height: calc(100% - 50px);
     display: flex;
-    flex-direction: column;
+    flex-direction: column; 
     align-items: center;
+}
+
+.loginCardWrapped {
+    margin-top: 17px;
+    display: flex;
+    align-items: center;
+    /* justify-content: center; */
+    flex-direction: column;
+    position: relative;
+}
+
+.tigerlogo {
+    height: 15%;
+    width: 15%;
+    margin-top: 5%;
+    margin-bottom: 4%;
+}
+
+.enterTitle {
+    font-size: 25px;
+}
+
+.enterForm {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 20px;
+}
+
+.enterInput {
+
 }

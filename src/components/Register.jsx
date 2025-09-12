@@ -74,15 +74,17 @@ const Register = () => {
       {userLoggedIn && (<Navigate to={'/'} replace={true} />)}
       <main className="mainlogin">
         <div className="loginCard">
+          <div className='loginCardWrapped'>
+            <img className='tigerlogo' src="images/icons/tiger icon.png" />
           <div className="text-center mb-6">
             <div className="mt-2">
-              <h3 className="text-gray-800 text-xl font-semibold sm:text-2xl">Create a New Account</h3>
+              <h3 className="enterTitle">Create a New Account</h3>
             </div>
 
           </div>
           <form
             onSubmit={onSubmit}
-            className="space-y-4"
+            className="enterForm"
           >
             <div>
               <label className="text-sm text-gray-600 font-bold">
@@ -93,7 +95,7 @@ const Register = () => {
                 autoComplete='email'
                 required
                 value={email} onChange={(e) => { setEmail(e.target.value) }}
-                className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg transition duration-300"
+                className="enterInput"
               />
             </div>
 
@@ -107,10 +109,10 @@ const Register = () => {
                 autoComplete='new-password'
                 required
                 value={password} onChange={(e) => { setPassword(e.target.value) }}
-                className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg transition duration-300"
+                className="enterInput"
               />
             </div>
-
+            {password && 
             <div>
               <label className="text-sm text-gray-600 font-bold">
                 Confirm Password
@@ -121,9 +123,11 @@ const Register = () => {
                 autoComplete='off'
                 required
                 value={confirmPassword} onChange={(e) => { setconfirmPassword(e.target.value) }}
-                className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg transition duration-300"
+                className="enterInput"
               />
-            </div>
+            </div>}
+
+            
 
             {errorMessage && (
               <span className='text-red-600 font-bold'>{errorMessage}</span>
@@ -141,6 +145,7 @@ const Register = () => {
               <Link to={'/login'} className="text-center text-sm hover:underline font-bold">Log In</Link>
             </div>
           </form>
+          </div>
         </div>
       </main>
     </>

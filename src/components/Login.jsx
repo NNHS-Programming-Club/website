@@ -81,15 +81,17 @@ const Login = () => {
 
       <main className="mainlogin">
         <div className="loginCard">
+          <div className='loginCardWrapped'>
+            <img className='tigerlogo' src="images/icons/tiger icon.png" />
           <div className='cardWrapper'>
             <div className="text-center">
             <div className="mt-2">
-              <h3 className="text-gray-800 text-xl font-semibold sm:text-2xl">Welcome Back</h3>
+              <h3 className="enterTitle">Welcome Back</h3>
             </div>
           </div>
           <form
             onSubmit={onSubmit}
-            className="space-y-5"
+            className="enterForm"
           >
             <div>
               <label className="text-sm text-gray-600 font-bold">
@@ -100,7 +102,7 @@ const Login = () => {
                 autoComplete='email'
                 required
                 value={email} onChange={(e) => { setEmail(e.target.value) }}
-                className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg transition duration-300"
+                className="enterInput"
               />
             </div>
 
@@ -114,7 +116,7 @@ const Login = () => {
                 autoComplete='current-password'
                 required
                 value={password} onChange={(e) => { setPassword(e.target.value) }}
-                className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg transition duration-300"
+                className="enterInput"
               />
             </div>
 
@@ -153,6 +155,7 @@ const Login = () => {
             </svg>
             {isSigningIn ? 'Signing In...' : 'Continue with Google'}
           </button>
+          </div>
           </div>
           
         </div>
