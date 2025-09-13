@@ -75,7 +75,7 @@ const Register = () => {
       <main className="mainlogin">
         <div className="loginCard">
           <div className='loginCardWrapped'>
-            <img className='tigerlogo' src="images/icons/tiger icon.png" />
+            <img className='tigerlogo' src="images/icons/plus icon.png" />
           <div className="text-center mb-6">
             <div className="mt-2">
               <h3 className="enterTitle">Create a New Account</h3>

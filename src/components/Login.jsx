@@ -94,10 +94,8 @@ const Login = () => {
             className="enterForm"
           >
             <div>
-              <label className="text-sm text-gray-600 font-bold">
-                Email
-              </label>
               <input
+                placeholder='Email'
                 type="email"
                 autoComplete='email'
                 required
@@ -108,10 +106,8 @@ const Login = () => {
 
 
             <div>
-              <label className="text-sm text-gray-600 font-bold">
-                Password
-              </label>
               <input
+                placeholder='Password'
                 type="password"
                 autoComplete='current-password'
                 required
@@ -127,7 +123,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={isSigningIn}
-              className={`enterSubmit ${isSigningIn ? 'enterActivated' : 'enterDeactivated'}`}
+              className={`enterSubmit ${password && email ? 'enterActivated' : 'enterDeactivated'}`}
             >
               {isSigningIn ? 'Signing In...' : 'Sign In'}
             </button>
