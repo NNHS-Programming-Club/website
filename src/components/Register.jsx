@@ -87,10 +87,11 @@ const Register = () => {
             className="enterForm"
           >
             <div>
-              <label className="text-sm text-gray-600 font-bold">
+              {/* <label className="text-sm text-gray-600 font-bold">
                 Email
-              </label>
+              </label> */}
               <input
+                placeholder='Email'
                 type="email"
                 autoComplete='email'
                 required
@@ -100,10 +101,8 @@ const Register = () => {
             </div>
 
             <div>
-              <label className="text-sm text-gray-600 font-bold">
-                Password
-              </label>
               <input
+                placeholder='Password'
                 disabled={isRegistering}
                 type="password"
                 autoComplete='new-password'
@@ -114,10 +113,8 @@ const Register = () => {
             </div>
             {password && 
             <div>
-              <label className="text-sm text-gray-600 font-bold">
-                Confirm Password
-              </label>
               <input
+                placeholder='Confirm Password'
                 disabled={isRegistering}
                 type="password"
                 autoComplete='off'
@@ -130,17 +127,18 @@ const Register = () => {
             
 
             {errorMessage && (
-              <span className='text-red-600 font-bold'>{errorMessage}</span>
+              <span className='errMSG'>{errorMessage}</span>
             )}
 
             <button
+            
               type="submit"
               disabled={isRegistering}
-              className={`w-full px-4 py-2 text-white font-medium rounded-lg ${isRegistering ? 'bg-gray-300 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700 hover:shadow-xl transition duration-300'}`}
+              className={`enterSubmit ${email && password && confirmPassword ? 'enterActivated' : 'enterDeactivated'}`}
             >
               {isRegistering ? 'Signing Up...' : 'Sign Up'}
             </button>
-            <div className="text-sm text-center">
+            <div className="switchEnter">
               Already have an account? {'   '}
               <Link to={'/login'} className="text-center text-sm hover:underline font-bold">Log In</Link>
             </div>

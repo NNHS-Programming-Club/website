@@ -121,18 +121,18 @@ const Login = () => {
             </div>
 
             {errorMessage && (
-              <span className='text-red-600 font-bold'>{errorMessage}</span>
+              <span className='errMSG'>{errorMessage}</span>
             )}
 
             <button
               type="submit"
               disabled={isSigningIn}
-              className={`w-full px-4 py-2 text-white font-medium rounded-lg ${isSigningIn ? 'bg-gray-300 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700 hover:shadow-xl transition duration-300'}`}
+              className={`enterSubmit ${isSigningIn ? 'enterActivated' : 'enterDeactivated'}`}
             >
               {isSigningIn ? 'Signing In...' : 'Sign In'}
             </button>
           </form>
-          <p className="text-center text-sm">Don't have an account? <Link to={'/register'} className="hover:underline font-bold">Sign up</Link></p>
+          <p className="switchEnter">Don't have an account? <Link to={'/register'} className="hover:underline font-bold">Sign up</Link></p>
           <div className='flex flex-row text-center w-full'>
             <div className='border-b-2 mb-2.5 mr-2 w-full'></div><div className='text-sm font-bold w-fit'>OR</div><div className='border-b-2 mb-2.5 ml-2 w-full'></div>
           </div>
