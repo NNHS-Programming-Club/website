@@ -7,7 +7,7 @@
   display: none;
 }
 
-[data-bs-theme="dark"] *:not(.cm-editor *) {
+[data-bs-theme="dark"] *:not(.monaco-editor *) {
   color: #F2EDD7;
 }
 
