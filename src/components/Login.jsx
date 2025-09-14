@@ -83,16 +83,15 @@ const Login = () => {
         <div className="loginCard">
           <div className='loginCardWrapped'>
             <img className='tigerlogo' src="images/icons/tiger icon.png" />
-          <div className='cardWrapper'>
             <div className="text-center">
-            <div className="mt-2">
-              <h3 className="enterTitle">Welcome Back</h3>
+              <div className="mt-2">
+                <h3 className="enterTitle">Welcome Back</h3>
+              </div>
             </div>
-          </div>
-          <form
-            onSubmit={onSubmit}
-            className="enterForm"
-          >
+            <form
+              onSubmit={onSubmit}
+              className="enterForm"
+            >
             <div>
               <input
                 placeholder='Email'
@@ -151,7 +150,6 @@ const Login = () => {
             </svg>
             {isSigningIn ? 'Signing In...' : 'Continue with Google'}
           </button>
-          </div>
           </div>
           
         </div>
