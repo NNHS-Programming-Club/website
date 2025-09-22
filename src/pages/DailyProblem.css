@@ -1,0 +1,19 @@
+select {
+    padding: 8px;
+    border-radius: 8px;
+}
+
+button {
+    padding: 4px;
+    border-radius: 8px;
+    border: none;
+    margin: 2px;
+}
+
+.problemDesc {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 8px;
+    margin-bottom: 16px;
+}
