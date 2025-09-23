@@ -143,8 +143,13 @@ export default function DailyProblem() {
   return (
     <div className="dailyProblem">
       <h1>Daily Problem</h1>
+
+      <div className="problemDesc">
+        <h2>Problem Title</h2>
+        <p>this is such a cool problem and you should totally solve it</p>
+      </div>
+
       <div className="form-group">
-        <label htmlFor="language">Select Language:</label>
         <select 
           id="language" 
           value={language} 
@@ -156,7 +161,7 @@ export default function DailyProblem() {
         </select>
       </div>
       
-      <div className="form-group">
+      <div style={{float: "left", width: "70%", marginRight: "8px"}} className="form-group">
         <label htmlFor="code">Code:</label>
         <CodeEditor 
           value={code}
@@ -168,6 +173,7 @@ export default function DailyProblem() {
       
       <div className="form-group">
         <label htmlFor="stdin">Input (stdin):</label>
+        <br />
         <textarea 
           id="stdin" 
           placeholder="Enter input here (optional)..."
