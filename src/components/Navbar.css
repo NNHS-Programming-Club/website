@@ -8,12 +8,20 @@
 
 /* Navbar.css */
 @media (max-width: 991.98px) {
-  /* Force navbar items to be in a row when collapsed */
+
   .navbar-collapse .navbar-nav {
     flex-direction: row;
     flex-wrap: wrap; /* allows items to wrap if needed */
     justify-content: flex-start; /* align left */
     gap: 0.5rem; /* optional spacing between items */
+  }
+
+  .navbar-nav .nav-link {
+    transition: color 0.3s;
+  }
+
+  .navbar-nav .nav-link:hover {
+    color: #aaaaaa; /* change to your desired hover color */
   }
 
   .navbar-collapse .horizontal-navbar {
