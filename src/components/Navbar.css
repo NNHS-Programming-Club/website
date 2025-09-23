@@ -6,22 +6,22 @@
   width: 30px;
 }
 
-/* Navbar.css */
+.navbar-nav .nav-link:hover {
+  color: #E48257;
+}
+
+/* for mobile */
 @media (max-width: 991.98px) {
 
   .navbar-collapse .navbar-nav {
     flex-direction: row;
-    flex-wrap: wrap; /* allows items to wrap if needed */
-    justify-content: flex-start; /* align left */
-    gap: 0.5rem; /* optional spacing between items */
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 0.5rem;
   }
 
   .navbar-nav .nav-link {
     transition: color 0.3s;
-  }
-
-  .navbar-nav .nav-link:hover {
-    color: #aaaaaa; /* change to your desired hover color */
   }
 
   .navbar-collapse .horizontal-navbar {
@@ -29,6 +29,6 @@
   }
 
   .navbar-collapse .navbar-nav .nav-item {
-    margin-bottom: 0; /* remove default bottom margin */
+    margin-bottom: 0;
   }
 }

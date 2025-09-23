@@ -58,10 +58,17 @@ export default function Navbar() {
               {userLoggedIn ? (
                   <>
                   <li className="nav-item">
-                    <Link to="/" className="nav-link"><img className="social-logo" src="images/icons/user.svg" alt="User icon" /></Link>
+                    {!darkMode && (
+                      <Link to="/" className="nav-link"><img className="social-logo" src="images/icons/user-dark.svg" alt="User icon" /></Link>
+                    )}
+
+                    {darkMode && (
+                      <Link to="/" className="nav-link"><img className="social-logo" src="images/icons/user-light.svg" alt="User icon" /></Link>
+                    )}
+                    
                   </li>
                   <li className="nav-item">
-                    <button onClick={() => { doSignOut().then(() => { navigate('/login') }) }} className="nav-link">Logout</button>
+                    <button onClick={() => { doSignOut().then(() => { navigate('/login') }) }} className="btn btn-primary">Logout</button>
                   </li>
               </>
 
@@ -72,7 +79,7 @@ export default function Navbar() {
                     <Link to="/login" className="nav-link">Log In</Link>
                   </li>
                   <li className="nav-item">
-                    <Link to="/register" className="nav-link">Sign Up</Link>
+                    <Link to="/register"><button type="button"  className="btn btn-primary">Sign Up</button></Link>
                   </li>
                 </>
               )}
