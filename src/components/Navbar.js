@@ -33,7 +33,9 @@ export default function Navbar() {
           </button>
 
           <div className="collapse navbar-collapse" id="navbarNav">
-            <ul className="navbar-nav d-flex w-100">
+            <ul className="navbar-nav flex-column flex-lg-row me-lg-auto align-items-start align-items-lg-center">
+
+              {/*Left Side Links */}
               <li className="nav-item">
                 <Link to="/about" className="nav-link">About</Link>
               </li>
@@ -49,30 +51,42 @@ export default function Navbar() {
               <li className="nav-item">
                 <Link to="/daily-problem" className="nav-link">Daily Problem</Link>
               </li>
-              
-              {userLoggedIn ? 
-                <div className="d-flex">
+            </ul>
+            
+            <ul className="navbar-nav horizontal-navbar flex-column flex-lg-row ms-lg-auto align-items-center mt-2 mt-lg-0">
+              {/*Right Side Login + Icons */}
+              {userLoggedIn ? (
+                  <>
                   <li className="nav-item">
-                    <Link to="/" className="nav-link"><img className="social-logo" src="images/icons/user.svg" alt="User icon" /></Link>
-                  </li>
-                  <li className="nav-item">
-                    <button onClick={() => { doSignOut().then(() => { navigate('/login') }) }} className="nav-link">Logout</button>
-                  </li>
-                </div>
+                    {!darkMode && (
+                      <Link to="/" className="nav-link"><img className="social-logo" src="images/icons/user-dark.svg" alt="User icon" /></Link>
+                    )}
 
-                :
-                
-                <div className="d-flex">
+                    {darkMode && (
+                      <Link to="/" className="nav-link"><img className="social-logo" src="images/icons/user-light.svg" alt="User icon" /></Link>
+                    )}
+                    
+                  </li>
                   <li className="nav-item">
+                    <button onClick={() => { doSignOut().then(() => { navigate('/login') }) }} className="btn btn-primary">Logout</button>
+                  </li>
+              </>
+
+                )  : (
+                
+                <>
+                  <li className="nav-item me-2">
                     <Link to="/login" className="nav-link">Log In</Link>
                   </li>
                   <li className="nav-item">
-                    <Link to="/register" className="nav-link">Sign Up</Link>
+                    <Link to="/register"><button type="button"  className="btn btn-primary">Sign Up</button></Link>
                   </li>
-                </div>
-              }
-              
+                </>
+              )}
 
+            </ul>
+            <ul className="navbar-nav horizontal-navbar flex-column flex-lg-row ms-lg-3 align-items-center mt-2 mt-lg-0">
+              <li className = "nav-item ms-3 my-2">
               {!darkMode &&
                 <img src={darkIconPath}
                      onMouseOver={() => setDarkIconPath("images/icons/dark-mode-hover.svg")}
@@ -92,14 +106,16 @@ export default function Navbar() {
                      alt="Light mode icon"
                 />
               }
+              </li>
               
-              <li className="nav-item d-flex align-items-center ms-3">
+              
+              <li className="nav-item ms-2 my-2">
                 <Link to="https://www.instagram.com/nnhsprogramming/" target="_blank"><img className="social-logo" src="images/icons/instagram.png" alt="Instagram logo"/></Link>
               </li>
-              <li className="nav-item d-flex align-items-center ms-2">
+              <li className="nav-item ms-2 my-2">
                 <Link to="https://www.facebook.com/groups/293459344434857/" target="_blank"><img className="social-logo" src="images/icons/facebook.png" alt="Facebook logo"/></Link>
               </li>
-              <li className="nav-item d-flex align-items-center ms-2 me-2">
+              <li className="nav-item ms-2 me-2 my-2">
                 {!darkMode && (
                   <Link to="https://github.com/NNHS-Programming-Club" target="_blank"><img className="social-logo" src="images/icons/github-dark.png" alt="Light GitHub logo"/></Link>
                 )}
