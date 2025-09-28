@@ -5,3 +5,30 @@
 .social-logo {
   width: 30px;
 }
+
+.navbar-nav .nav-link:hover {
+  color: #E48257;
+}
+
+/* for mobile */
+@media (max-width: 991.98px) {
+
+  .navbar-collapse .navbar-nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 0.5rem;
+  }
+
+  .navbar-nav .nav-link {
+    transition: color 0.3s;
+  }
+
+  .navbar-collapse .horizontal-navbar {
+    flex-direction: row !important;
+  }
+
+  .navbar-collapse .navbar-nav .nav-item {
+    margin-bottom: 0;
+  }
+}
