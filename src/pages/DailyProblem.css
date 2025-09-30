@@ -1,0 +1,41 @@
+select {
+    padding: 8px;
+    border-radius: 8px;
+}
+
+button {
+    padding: 4px;
+    border-radius: 8px;
+    border: none;
+    margin: 2px;
+}
+
+.problemDesc {
+    /* left side problem description panel */
+    float: left;
+    width: 25%;
+    height: 100%;
+    border: 1px solid #868076;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 8px;
+    margin-bottom: 16px;
+}
+
+.codeColumn {
+    /* right side code editor column */
+    float: right;
+    width: 70%;
+    height: 100%;
+    margin-right: 8px;
+}
+
+.stdinPanel {
+    /* stdin / controls panel on the left under the problem description */
+    border: 1px solid #868076;
+    float: left;
+    padding: 8px;
+    border-radius: 4px;
+    width: 25%;
+    margin: 8px;
+}

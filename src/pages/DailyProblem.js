@@ -142,50 +142,59 @@ export default function DailyProblem() {
 
   return (
     <div className="dailyProblem">
-      <h1>Daily Problem</h1>
-      <div className="form-group">
-        <label htmlFor="language">Select Language:</label>
-        <select 
-          id="language" 
-          value={language} 
-          onChange={(e) => setLanguage(e.target.value)}
-        >
-          <option value="92">Python 3.11.2</option>
-          <option value="54">C++ (GCC 9.2.0)</option>
-          <option value="91">Java (JDK 17.0.6)</option>
-        </select>
+      <div className="problemDesc">
+        <h2>Problem Title</h2>
+        <p>this is such a cool problem and you should totally solve it</p>
+
+        <h3>Example</h3>
+        <p><strong>Input:</strong> [1,2,3,4]</p>
+        <p><strong>Output:</strong> 10</p>
+        <p><strong>Explanation:</strong> The sum of the numbers is 10.</p>
       </div>
       
-      <div className="form-group">
-        <label htmlFor="code">Code:</label>
+      <div className="form-group codeColumn">
+        <div className="form-group">
+          <select 
+            id="language" 
+            value={language} 
+            onChange={(e) => setLanguage(e.target.value)}
+          >
+            <option value="92">Python 3.11.2</option>
+            <option value="54">C++ (GCC 9.2.0)</option>
+            <option value="91">Java (JDK 17.0.6)</option>
+          </select>
+        </div>
+
         <CodeEditor 
           value={code}
           onChange={setCode}
           languageId={language}
-          height="300px"
+          height="500px"
         />
       </div>
-      
-      <div className="form-group">
+
+      <br /> <br />
+
+      <div className="form-group stdinPanel">
         <label htmlFor="stdin">Input (stdin):</label>
+        <br />
         <textarea 
           id="stdin" 
           placeholder="Enter input here (optional)..."
           value={stdin}
           onChange={(e) => setStdin(e.target.value)}
         />
-      </div>
-      
-      <div className="button-group">
+
+        <div className="button-group">
         <button 
-          className="run-button" 
+          className="btn btn-secondary" 
           onClick={handleRunCode}
           disabled={isRunning || isSubmitting}
         >
           {isRunning ? 'Running...' : 'Run Code'}
         </button>
         <button 
-          className="submit-button" 
+          className="btn btn-primary" 
           onClick={handleSubmitCode}
           disabled={isRunning || isSubmitting}
         >
@@ -200,6 +209,7 @@ export default function DailyProblem() {
             <strong>Error:</strong> {error}
           </div>
         )}
+      </div>
       </div>
     </div>
   );
