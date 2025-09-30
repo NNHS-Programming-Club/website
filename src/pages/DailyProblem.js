@@ -142,9 +142,7 @@ export default function DailyProblem() {
 
   return (
     <div className="dailyProblem">
-      <h1>Daily Problem</h1>
-
-      <div className="problemDesc" style={{float: "left", width: "25%", height: "100%", marginLeft: "8px", marginTop: "8px"}}>
+      <div className="problemDesc">
         <h2>Problem Title</h2>
         <p>this is such a cool problem and you should totally solve it</p>
 
@@ -154,20 +152,19 @@ export default function DailyProblem() {
         <p><strong>Explanation:</strong> The sum of the numbers is 10.</p>
       </div>
       
-      <div style={{float: "right", width: "70%", marginRight: "8px"}} className="form-group">
-    <div className="form-group">
-        <select 
-          id="language" 
-          value={language} 
-          onChange={(e) => setLanguage(e.target.value)}
-        >
-          <option value="92">Python 3.11.2</option>
-          <option value="54">C++ (GCC 9.2.0)</option>
-          <option value="91">Java (JDK 17.0.6)</option>
-        </select>
-      </div>
+      <div className="form-group codeColumn">
+        <div className="form-group">
+          <select 
+            id="language" 
+            value={language} 
+            onChange={(e) => setLanguage(e.target.value)}
+          >
+            <option value="92">Python 3.11.2</option>
+            <option value="54">C++ (GCC 9.2.0)</option>
+            <option value="91">Java (JDK 17.0.6)</option>
+          </select>
+        </div>
 
-        <label htmlFor="code">Code:</label>
         <CodeEditor 
           value={code}
           onChange={setCode}
@@ -178,7 +175,7 @@ export default function DailyProblem() {
 
       <br /> <br />
 
-      <div style={{ border: "1px solid #868076", float: "left", padding: "8px", borderRadius: "4px", width: "25%", margin: "8px" }} className="form-group">
+      <div className="form-group stdinPanel">
         <label htmlFor="stdin">Input (stdin):</label>
         <br />
         <textarea 
@@ -190,14 +187,14 @@ export default function DailyProblem() {
 
         <div className="button-group">
         <button 
-          className="btn btn-primary" 
+          className="btn btn-secondary" 
           onClick={handleRunCode}
           disabled={isRunning || isSubmitting}
         >
           {isRunning ? 'Running...' : 'Run Code'}
         </button>
         <button 
-          className="btn btn-secondary" 
+          className="btn btn-primary" 
           onClick={handleSubmitCode}
           disabled={isRunning || isSubmitting}
         >
