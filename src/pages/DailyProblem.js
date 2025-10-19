@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './DailyProblem.css';
 import { makeSubmissionAndGetToken, getSubmission } from '../api/judge0-api';
 import { GET_SUBMISSION_DELAY } from '../constants';
 import CodeEditor from '../components/CodeEditor';
+import { getDailyProblem } from '../firebase/auth';
 
 export default function DailyProblem() {
   // State management
@@ -13,6 +14,30 @@ export default function DailyProblem() {
   const [isRunning, setIsRunning] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
+  
+  // Daily problem state
+  const [dailyProblem, setDailyProblem] = useState(null);
+  const [isLoadingProblem, setIsLoadingProblem] = useState(true);
+  const [problemError, setProblemError] = useState(null);
+
+  // Fetch daily problem on component mount
+  useEffect(() => {
+    const fetchDailyProblem = async () => {
+      try {
+        setIsLoadingProblem(true);
+        setProblemError(null);
+        const problem = await getDailyProblem();
+        setDailyProblem(problem);
+      } catch (error) {
+        console.error('Error fetching daily problem:', error);
+        setProblemError(error.message);
+      } finally {
+        setIsLoadingProblem(false);
+      }
+    };
+
+    fetchDailyProblem();
+  }, []);
 
   // Helper function to format submission result
   const formatSubmissionResult = (submission, expectedOutput, isRunCode) => {
@@ -143,74 +168,105 @@ export default function DailyProblem() {
   return (
     <div className="dailyProblem">
       <div className="problemDesc">
-        <h2>Problem Title</h2>
-        <p>this is such a cool problem and you should totally solve it</p>
-
-        <h3>Example</h3>
-        <p><strong>Input:</strong> [1,2,3,4]</p>
-        <p><strong>Output:</strong> 10</p>
-        <p><strong>Explanation:</strong> The sum of the numbers is 10.</p>
-      </div>
-      
-      <div className="form-group codeColumn">
-        <div className="form-group">
-          <select 
-            id="language" 
-            value={language} 
-            onChange={(e) => setLanguage(e.target.value)}
-          >
-            <option value="92">Python 3.11.2</option>
-            <option value="54">C++ (GCC 9.2.0)</option>
-            <option value="91">Java (JDK 17.0.6)</option>
-          </select>
-        </div>
-
-        <CodeEditor 
-          value={code}
-          onChange={setCode}
-          languageId={language}
-          height="500px"
-        />
-      </div>
-
-      <br /> <br />
-
-      <div className="form-group stdinPanel">
-        <label htmlFor="stdin">Input (stdin):</label>
-        <br />
-        <textarea 
-          id="stdin" 
-          placeholder="Enter input here (optional)..."
-          value={stdin}
-          onChange={(e) => setStdin(e.target.value)}
-        />
-
-        <div className="button-group">
-        <button 
-          className="btn btn-secondary" 
-          onClick={handleRunCode}
-          disabled={isRunning || isSubmitting}
-        >
-          {isRunning ? 'Running...' : 'Run Code'}
-        </button>
-        <button 
-          className="btn btn-primary" 
-          onClick={handleSubmitCode}
-          disabled={isRunning || isSubmitting}
-        >
-          {isSubmitting ? 'Submitting...' : 'Submit'}
-        </button>
-      </div>
-      
-      <div className="output">
-        <pre>{output}</pre>
-        {error && (
-          <div className="error-message">
-            <strong>Error:</strong> {error}
+        {isLoadingProblem ? (
+          <div>
+            <h2>Loading today's problem...</h2>
+            <p>Please wait while we fetch your daily challenge.</p>
+          </div>
+        ) : problemError ? (
+          <div>
+            <h2>Error Loading Problem</h2>
+            <p>Sorry, we couldn't load today's problem: {problemError}</p>
+            <p>Please try refreshing the page.</p>
+          </div>
+        ) : dailyProblem ? (
+          <div>
+            <h2>{dailyProblem.title}</h2>
+            <p><strong>Contest:</strong> USACO {dailyProblem.year} {dailyProblem.month} Contest, {dailyProblem.division}</p>
+            <p><strong>Problem Number:</strong> {dailyProblem['problem-number']}</p>
+            <div style={{ marginTop: '20px' }}>
+              <h3>Problem Description</h3>
+              <div style={{ whiteSpace: 'pre-wrap', lineHeight: '1.6' }}>
+                {dailyProblem.description}
+              </div>
+            </div>
+            {dailyProblem.url && (
+              <div style={{ marginTop: '20px' }}>
+                <p><strong>Original Problem:</strong> <a href={dailyProblem.url} target="_blank" rel="noopener noreferrer">View on USACO Website</a></p>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div>
+            <h2>No Problem Available</h2>
+            <p>Sorry, no problem is available at the moment.</p>
           </div>
         )}
       </div>
-      </div>
+      
+      {dailyProblem && !isLoadingProblem && !problemError && (
+        <>
+          <div className="form-group codeColumn">
+            <div className="form-group">
+              <select 
+                id="language" 
+                value={language} 
+                onChange={(e) => setLanguage(e.target.value)}
+              >
+                <option value="92">Python 3.11.2</option>
+                <option value="54">C++ (GCC 9.2.0)</option>
+                <option value="91">Java (JDK 17.0.6)</option>
+              </select>
+            </div>
+
+            <CodeEditor 
+              value={code}
+              onChange={setCode}
+              languageId={language}
+              height="500px"
+            />
+          </div>
+
+          <br /> <br />
+
+          <div className="form-group stdinPanel">
+            <label htmlFor="stdin">Input (stdin):</label>
+            <br />
+            <textarea 
+              id="stdin" 
+              placeholder="Enter input here (optional)..."
+              value={stdin}
+              onChange={(e) => setStdin(e.target.value)}
+            />
+
+            <div className="button-group">
+              <button 
+                className="btn btn-secondary" 
+                onClick={handleRunCode}
+                disabled={isRunning || isSubmitting}
+              >
+                {isRunning ? 'Running...' : 'Run Code'}
+              </button>
+              <button 
+                className="btn btn-primary" 
+                onClick={handleSubmitCode}
+                disabled={isRunning || isSubmitting}
+              >
+                {isSubmitting ? 'Submitting...' : 'Submit'}
+              </button>
+            </div>
+          </div>
+          
+          <div className="output">
+            <pre>{output}</pre>
+            {error && (
+              <div className="error-message">
+                <strong>Error:</strong> {error}
+              </div>
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 }

@@ -153,3 +153,45 @@ export const checkEmailAvailability = async (email) => {
   const emailDoc = await getDoc(doc(db, "emails", email));
   return !emailDoc.exists();
 };
+
+// Get a random daily problem based on the current date
+export const getDailyProblem = async () => {
+  try {
+    // Get today's date as a seed for consistent daily selection
+    const today = new Date();
+    const dateString = today.toISOString().split('T')[0]; // YYYY-MM-DD format
+    
+    // Create a simple hash from the date string for consistent seeding
+    let seed = 0;
+    for (let i = 0; i < dateString.length; i++) {
+      seed = ((seed << 5) - seed + dateString.charCodeAt(i)) & 0xffffffff;
+    }
+    seed = Math.abs(seed);
+    
+    // Get all problems from the collection
+    const { collection, query, getDocs, orderBy } = await import('firebase/firestore');
+    const problemsRef = collection(db, 'problems');
+    const q = query(problemsRef, orderBy('id'));
+    const snapshot = await getDocs(q);
+    
+    if (snapshot.empty) {
+      throw new Error('No problems found in the database');
+    }
+    
+    const problems = [];
+    snapshot.forEach((doc) => {
+      problems.push({ id: doc.id, ...doc.data() });
+    });
+    
+    // Use the seed to select a consistent random problem for today
+    const randomIndex = seed % problems.length;
+    const dailyProblem = problems[randomIndex];
+    
+    console.log(`Daily problem selected for ${dateString}:`, dailyProblem.title);
+    
+    return dailyProblem;
+  } catch (error) {
+    console.error('Error fetching daily problem:', error);
+    throw error;
+  }
+};
