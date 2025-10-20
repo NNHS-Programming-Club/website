@@ -1,15 +1,70 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect, useRef, useCallback, forwardRef } from 'react';
 import Editor from '@monaco-editor/react';
 import { monacoLanguageMap } from '../constants';
 
-const CodeEditor = ({ value, onChange, languageId = '92', height = '400px' }) => {
+const CodeEditor = forwardRef(({ value, onChange, languageId = '92', height = '400px'}, ref) => {
+  const editorRef = useRef(null);
+  
   const language = useMemo(() => {
     const mappedLanguage = monacoLanguageMap[languageId] || 'python';
     console.log('Language ID:', languageId, 'Mapped to:', mappedLanguage);
     return mappedLanguage;
   }, [languageId]);
 
+  // Debounced resize handler based on the article's approach
+  const debounce = useCallback((func, wait) => {
+    let timeout;
+    return function executedFunction(...args) {
+      const later = () => {
+        clearTimeout(timeout);
+        func(...args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  }, []);
+
+  const handleResize = useCallback(() => {
+    if (editorRef.current && ref.current) {
+      // Squash editor to force repaint and get actual container size
+      editorRef.current.layout({ width: 0, height: 0 });
+      
+      // Use requestAnimationFrame to ensure the squashing has taken effect
+      requestAnimationFrame(() => {
+        const containerRect = ref.current.getBoundingClientRect();
+        editorRef.current.layout({
+          width: containerRect.width,
+          height: containerRect.height
+        });
+      });
+    }
+  }, [ref]);
+
+  const debouncedResize = useMemo(() => debounce(handleResize, 100), [handleResize, debounce]);
+
+  useEffect(() => {
+    // Window resize listener
+    window.addEventListener('resize', debouncedResize);
+    
+    // Container resize observer
+    let resizeObserver;
+    if (ref.current && window.ResizeObserver) {
+      resizeObserver = new ResizeObserver(debouncedResize);
+      resizeObserver.observe(ref.current);
+    }
+
+    return () => {
+      window.removeEventListener('resize', debouncedResize);
+      if (resizeObserver) {
+        resizeObserver.disconnect();
+      }
+    };
+  }, [debouncedResize]);
+
   const onMount = (editor, monaco) => {
+    // Store editor reference
+    editorRef.current = editor;
+    
     // Define Gruvbox theme
     monaco.editor.defineTheme('gruvbox', {
       base: 'vs-dark',
@@ -63,23 +118,23 @@ const CodeEditor = ({ value, onChange, languageId = '92', height = '400px' }) =>
       tabSize: 4,
       insertSpaces: true,
       detectIndentation: true,
-      automaticLayout: true
+      scrollBeyondLastLine: false,
+      // automaticLayout: true
     });
   };
 
   return (
-    <div style={{ border: '1px solid #ccc', borderRadius: '4px', overflow: 'hidden' }}>
+    <div ref={ref} style={{ border: '1px solid #ccc', borderRadius: '4px', overflow: 'hidden'}}>
       <Editor
         options={{
           minimap: { enabled: false },
           lineNumbers: 'on',
           wordWrap: 'on',
           bracketPairColorization: { enabled: true },
-          folding: true,
           matchBrackets: 'always',
           fontSize: 14,
           fontFamily: "'Consolas', 'Courier New', monospace",
-          automaticLayout: true,
+          // automaticLayout: true,
           scrollBeyondLastLine: false,
           renderWhitespace: 'selection',
           tabSize: 4,
@@ -95,6 +150,6 @@ const CodeEditor = ({ value, onChange, languageId = '92', height = '400px' }) =>
       />
     </div>
   );
-};
+});
 
 export default CodeEditor;

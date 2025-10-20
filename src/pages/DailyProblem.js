@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './DailyProblem.css';
 import { makeSubmissionAndGetToken, getSubmission } from '../api/judge0-api';
 import { GET_SUBMISSION_DELAY } from '../constants';
 import CodeEditor from '../components/CodeEditor';
+import ResizeBar from '../components/ResizeBar';
 import { getDailyProblem } from '../firebase/auth';
 
 export default function DailyProblem() {
@@ -19,6 +20,37 @@ export default function DailyProblem() {
   const [dailyProblem, setDailyProblem] = useState(null);
   const [isLoadingProblem, setIsLoadingProblem] = useState(true);
   const [problemError, setProblemError] = useState(null);
+
+  // Panel sizing state
+  const [leftPanelWidth, setLeftPanelWidth] = useState(500);
+  const [codeEditorHeight, setCodeEditorHeight] = useState(400);
+
+  // Refs for resize targets
+  const problemDescRef = useRef(null);
+  const codeEditorContainerRef = useRef(null);
+
+  // Calculate constraints based on window size percentages
+  const getLeftPanelConstraints = () => {
+    const windowWidth = window.innerWidth;
+    // console.log("Window width: ", windowWidth);
+    return {
+      minSize: windowWidth * 0.2, // 20% of window width
+      maxSize: windowWidth * 0.7   // 70% of window width
+    };
+  };
+
+  const getCodeEditorConstraints = () => {
+    const windowHeight = window.innerHeight;
+    const navbarHeight = 100; // Approximate navbar height
+    const margins = 32; // Total margins and padding
+    const availableHeight = windowHeight - navbarHeight - margins;
+    console.log("max Height: ", availableHeight*0.85);
+    
+    return {
+      minSize: availableHeight * 0.15, // 15% of available height
+      maxSize: availableHeight * 0.85   // 85% of available height
+    };
+  };
 
   // Fetch daily problem on component mount
   useEffect(() => {
@@ -37,6 +69,22 @@ export default function DailyProblem() {
     };
 
     fetchDailyProblem();
+  }, []);
+
+  // Handle window resize to update constraints
+  useEffect(() => {
+    const handleWindowResize = () => {
+      // Recalculate constraints when window resizes
+      const leftConstraints = getLeftPanelConstraints();
+      const codeEditorConstraints = getCodeEditorConstraints();
+      
+      // Ensure current sizes are within new constraints
+      setLeftPanelWidth(prev => Math.max(leftConstraints.minSize, Math.min(leftConstraints.maxSize, prev)));
+      setCodeEditorHeight(prev => Math.max(codeEditorConstraints.minSize, Math.min(codeEditorConstraints.maxSize, prev)));
+    };
+
+    window.addEventListener('resize', handleWindowResize);
+    return () => window.removeEventListener('resize', handleWindowResize);
   }, []);
 
   // Helper function to format submission result
@@ -167,7 +215,11 @@ export default function DailyProblem() {
 
   return (
     <div className="dailyProblem">
-      <div className="problemDesc">
+      <div 
+        ref={problemDescRef}
+        className="problemDesc"
+        style={{ width: `${leftPanelWidth}px` }}
+      >
         {isLoadingProblem ? (
           <div>
             <h2>Loading today's problem...</h2>
@@ -204,28 +256,34 @@ export default function DailyProblem() {
         )}
       </div>
 
-      {dailyProblem && !isLoadingProblem && !problemError && (
-        <div className="rightColumn flex-fill d-flex flex-column">
+      <ResizeBar 
+        direction="vertical" 
+        onResize={setLeftPanelWidth}
+        minSize={getLeftPanelConstraints().minSize}
+        maxSize={getLeftPanelConstraints().maxSize}
+        targetElement={problemDescRef.current}
+      />
 
+      {dailyProblem && !isLoadingProblem && !problemError && (
+        <div className="rightColumn">
           <CodeEditor
+            ref={codeEditorContainerRef}
             value={code}
             onChange={setCode}
             languageId={language}
-            height="500px"
+            height={`${codeEditorHeight}px`}
           />
+
+          <ResizeBar 
+            direction="horizontal" 
+            onResize={setCodeEditorHeight}
+            minSize={getCodeEditorConstraints().minSize}
+            maxSize={getCodeEditorConstraints().maxSize}
+            targetElement={codeEditorContainerRef.current}
+          />
+
           <div className="bottomRight">
-            <select
-              id="language"
-              value={language}
-              onChange={(e) => setLanguage(e.target.value)}
-            >
-              <option value="92">Python 3.11.2</option>
-              <option value="54">C++ (GCC 9.2.0)</option>
-              <option value="91">Java (JDK 17.0.6)</option>
-            </select>
-
-
-            <div className="form-group controlsContainer">
+            <div className="form-group inputContainer">
               <label htmlFor="stdin">Input (stdin):</label>
               <br />
               <textarea
@@ -235,25 +293,40 @@ export default function DailyProblem() {
                 onChange={(e) => setStdin(e.target.value)}
               />
 
-              <div className="button-group">
-                <button
-                  className="btn btn-secondary"
-                  onClick={handleRunCode}
-                  disabled={isRunning || isSubmitting}
-                >
-                  {isRunning ? 'Running...' : 'Run Code'}
-                </button>
-                <button
-                  className="btn btn-primary"
-                  onClick={handleSubmitCode}
-                  disabled={isRunning || isSubmitting}
-                >
-                  {isSubmitting ? 'Submitting...' : 'Submit'}
-                </button>
+              <div className="controls-group">
+                <div className="languageSelector">
+                  <label htmlFor="language">Language:</label>
+                  <select
+                    id="language"
+                    value={language}
+                    onChange={(e) => setLanguage(e.target.value)}
+                  >
+                    <option value="92">Python 3.11.2</option>
+                    <option value="54">C++ (GCC 9.2.0)</option>
+                    <option value="91">Java (JDK 17.0.6)</option>
+                  </select>
+                </div>
+                
+                <div className="button-group">
+                  <button
+                    className="btn btn-secondary"
+                    onClick={handleRunCode}
+                    disabled={isRunning || isSubmitting}
+                  >
+                    {isRunning ? 'Running...' : 'Run Code'}
+                  </button>
+                  <button
+                    className="btn btn-primary"
+                    onClick={handleSubmitCode}
+                    disabled={isRunning || isSubmitting}
+                  >
+                    {isSubmitting ? 'Submitting...' : 'Submit'}
+                  </button>
+                </div>
               </div>
             </div>
 
-            <div className="output">
+            <div className="outputContainer">
               <pre>{output}</pre>
               {error && (
                 <div className="error-message">

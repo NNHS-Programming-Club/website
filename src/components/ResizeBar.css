@@ -1,0 +1,27 @@
+.resize-bar {
+  background-color: #868076;
+  position: relative;
+  transition: background-color 0.2s ease;
+}
+
+.resize-bar:hover {
+  background-color: #fe8019;
+}
+
+.resize-bar-vertical {
+  width: 4px;
+  height: 100%;
+  cursor: col-resize;
+  flex-shrink: 0;
+}
+
+.resize-bar-horizontal {
+  height: 4px;
+  width: 100%;
+  cursor: row-resize;
+  flex-shrink: 0;
+}
+
+.resize-bar:active {
+  background-color: #fe8019;
+}
