@@ -14,7 +14,7 @@ export default function DailyProblem() {
   const [isRunning, setIsRunning] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
-  
+
   // Daily problem state
   const [dailyProblem, setDailyProblem] = useState(null);
   const [isLoadingProblem, setIsLoadingProblem] = useState(true);
@@ -42,7 +42,7 @@ export default function DailyProblem() {
   // Helper function to format submission result
   const formatSubmissionResult = (submission, expectedOutput, isRunCode) => {
     const statusCode = submission.status.id;
-    
+
     let outputText = "";
     if (submission.stdout !== null) {
       outputText = atob(submission.stdout);
@@ -72,11 +72,11 @@ export default function DailyProblem() {
     } else if (statusCode >= 7) {
       resultText = "💥 " + submission.status.description + "\n\nError:\n" + atob(submission.stderr);
     }
-    
+
     // Add execution time and memory info
     resultText += `\n\nExecution Time: ${executionTime}`;
     resultText += `\nMemory Used: ${memoryUsed}`;
-    
+
     return resultText;
   };
 
@@ -86,21 +86,21 @@ export default function DailyProblem() {
 
     let token = await makeSubmissionAndGetToken(languageId, code, stdin, expectedOutput);
     console.log("Submission token: ", token);
-    
+
     if (!token) {
       throw new Error('Unable to submit your code to the execution server. Please check your connection and try again.');
     }
-    
+
     while (true) {
       const submission = await getSubmission(token);
       console.log("Submission: ", submission);
-      
+
       if (!submission) {
         throw new Error('Unable to retrieve your code execution results. The execution server may be temporarily unavailable.');
       }
-      
+
       const statusCode = submission.status.id;
-      
+
       // If still processing, show status and wait
       if (statusCode === 1) {
         setOutput('In Queue...');
@@ -112,7 +112,7 @@ export default function DailyProblem() {
         await new Promise(resolve => setTimeout(resolve, GET_SUBMISSION_DELAY));
         continue;
       }
-      
+
       // Return the final submission result
       return submission;
     }
@@ -124,11 +124,11 @@ export default function DailyProblem() {
       setOutput('Please enter some code to run.');
       return;
     }
-    
+
     setIsRunning(true);
     setError(null);
     setOutput('Setting up...');
-    
+
     try {
       const submission = await submitCodeToJudge0(parseInt(language), code, stdin, null);
       const resultText = formatSubmissionResult(submission, null, true);
@@ -147,11 +147,11 @@ export default function DailyProblem() {
       setOutput('Please enter some code to submit.');
       return;
     }
-    
+
     setIsSubmitting(true);
     setError(null);
     setOutput('Submitting code...');
-    
+
     try {
       const submission = await submitCodeToJudge0(parseInt(language), code, stdin, '');
       const resultText = formatSubmissionResult(submission, '', false);
@@ -203,69 +203,66 @@ export default function DailyProblem() {
           </div>
         )}
       </div>
-      
+
       {dailyProblem && !isLoadingProblem && !problemError && (
-        <>
-          <div className="form-group codeColumn">
-            <div className="form-group">
-              <select 
-                id="language" 
-                value={language} 
-                onChange={(e) => setLanguage(e.target.value)}
-              >
-                <option value="92">Python 3.11.2</option>
-                <option value="54">C++ (GCC 9.2.0)</option>
-                <option value="91">Java (JDK 17.0.6)</option>
-              </select>
-            </div>
+        <div className="rightColumn flex-fill d-flex flex-column">
 
-            <CodeEditor 
-              value={code}
-              onChange={setCode}
-              languageId={language}
-              height="500px"
-            />
-          </div>
+          <CodeEditor
+            value={code}
+            onChange={setCode}
+            languageId={language}
+            height="500px"
+          />
+          <div className="bottomRight">
+            <select
+              id="language"
+              value={language}
+              onChange={(e) => setLanguage(e.target.value)}
+            >
+              <option value="92">Python 3.11.2</option>
+              <option value="54">C++ (GCC 9.2.0)</option>
+              <option value="91">Java (JDK 17.0.6)</option>
+            </select>
 
-          <br /> <br />
 
-          <div className="form-group stdinPanel">
-            <label htmlFor="stdin">Input (stdin):</label>
-            <br />
-            <textarea 
-              id="stdin" 
-              placeholder="Enter input here (optional)..."
-              value={stdin}
-              onChange={(e) => setStdin(e.target.value)}
-            />
+            <div className="form-group controlsContainer">
+              <label htmlFor="stdin">Input (stdin):</label>
+              <br />
+              <textarea
+                id="stdin"
+                placeholder="Enter input here (optional)..."
+                value={stdin}
+                onChange={(e) => setStdin(e.target.value)}
+              />
 
-            <div className="button-group">
-              <button 
-                className="btn btn-secondary" 
-                onClick={handleRunCode}
-                disabled={isRunning || isSubmitting}
-              >
-                {isRunning ? 'Running...' : 'Run Code'}
-              </button>
-              <button 
-                className="btn btn-primary" 
-                onClick={handleSubmitCode}
-                disabled={isRunning || isSubmitting}
-              >
-                {isSubmitting ? 'Submitting...' : 'Submit'}
-              </button>
-            </div>
-          </div>
-          
-          <div className="output">
-            <pre>{output}</pre>
-            {error && (
-              <div className="error-message">
-                <strong>Error:</strong> {error}
+              <div className="button-group">
+                <button
+                  className="btn btn-secondary"
+                  onClick={handleRunCode}
+                  disabled={isRunning || isSubmitting}
+                >
+                  {isRunning ? 'Running...' : 'Run Code'}
+                </button>
+                <button
+                  className="btn btn-primary"
+                  onClick={handleSubmitCode}
+                  disabled={isRunning || isSubmitting}
+                >
+                  {isSubmitting ? 'Submitting...' : 'Submit'}
+                </button>
               </div>
-            )}
+            </div>
+
+            <div className="output">
+              <pre>{output}</pre>
+              {error && (
+                <div className="error-message">
+                  <strong>Error:</strong> {error}
+                </div>
+              )}
+            </div>
           </div>
-        </>
+        </div>
       )}
     </div>
   );

@@ -10,32 +10,35 @@ button {
     margin: 2px;
 }
 
+.dailyProblem {
+    display: flex;
+    height: calc(100vh - 100px);
+    width: 100%;
+}
+
 .problemDesc {
     /* left side problem description panel */
-    float: left;
-    width: 25%;
     height: 100%;
+    width: 50%;
     border: 1px solid #868076;
     border-radius: 8px;
     padding: 16px;
     margin: 8px;
     margin-bottom: 16px;
+    overflow: auto;
 }
 
-.codeColumn {
+.rightColumn {
     /* right side code editor column */
-    float: right;
-    width: 70%;
     height: 100%;
+    width: auto;
     margin-right: 8px;
 }
 
-.stdinPanel {
+.controlsContainer {
     /* stdin / controls panel on the left under the problem description */
     border: 1px solid #868076;
-    float: left;
     padding: 8px;
     border-radius: 4px;
-    width: 25%;
     margin: 8px;
 }
