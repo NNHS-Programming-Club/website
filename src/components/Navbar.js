@@ -59,11 +59,11 @@ export default function Navbar() {
                   <>
                   <li className="nav-item">
                     {!darkMode && (
-                      <Link to="/" className="nav-link"><img className="social-logo" src="images/icons/user-dark.svg" alt="User icon" /></Link>
+                      <Link to="/profile" className="nav-link"><img className="social-logo" src="images/icons/user-dark.svg" alt="User icon" /></Link>
                     )}
 
                     {darkMode && (
-                      <Link to="/" className="nav-link"><img className="social-logo" src="images/icons/user-light.svg" alt="User icon" /></Link>
+                      <Link to="/profile" className="nav-link"><img className="social-logo" src="images/icons/user-light.svg" alt="User icon" /></Link>
                     )}
                     
                   </li>

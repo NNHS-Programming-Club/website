@@ -9,6 +9,7 @@ import Navbar from './components/Navbar'
 import Home from './pages/Home'
 import About from './pages/About'
 import Projects from './pages/Projects'
+import Profile from './pages/Profile';
 import Members from './pages/Members'
 import Events from './pages/Events';
 import Error404 from './pages/Error404'
@@ -32,6 +33,7 @@ function App() {
             <Route path = "/daily-problem" element = {<DailyProblem />} />
             <Route path = "/login" element = {<Login />} />
             <Route path = "/register" element = {<Register />} />
+            <Route path = "/profile" element = {<Profile />} />
             <Route path = "/*" element = { <Error404 /> } />
           </Routes>
         </BrowserRouter>
