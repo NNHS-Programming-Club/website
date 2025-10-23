@@ -1,8 +1,7 @@
-/* Profile Page Styles */
-
 .profile-page {
   max-width: 1200px;
   margin: 0 auto;
+  height: calc(100vh - 80px);
 }
 
 .profile-card {
