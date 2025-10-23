@@ -1,0 +1,200 @@
+.profile-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  height: calc(100vh - 80px);
+}
+
+.profile-card {
+  border: none;
+  border-radius: 12px;
+}
+
+.profile-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #f8f9fa;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.profile-points {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background: linear-gradient(135deg, #E48257 0%, #f4a261 100%);
+  border-radius: 12px;
+  color: white;
+  margin: 20px 0;
+}
+
+.profile-points-number {
+  font-size: 2.5rem;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.profile-points-label {
+  font-size: 0.9rem;
+  opacity: 0.9;
+  margin-top: 4px;
+}
+
+.profile-tags {
+  margin-bottom: 20px;
+}
+
+.profile-tag {
+  background-color: #E48257;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.profile-stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.profile-stat-row:last-child {
+  border-bottom: none;
+}
+
+.contribution-grid {
+  display: flex;
+  gap: 3px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.week-column {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.contribution-cell {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  background-color: #ebedf0;
+  border: 1px solid rgba(27, 31, 35, 0.06);
+  transition: all 0.2s ease;
+}
+
+.contribution-cell:hover {
+  transform: scale(1.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.level-0 {
+  background-color: #ebedf0;
+}
+
+.level-1 {
+  background-color: #9be9a8;
+}
+
+.level-2 {
+  background-color: #40c463;
+}
+
+.level-3 {
+  background-color: #30a14e;
+}
+
+.level-4 {
+  background-color: #216e39;
+}
+
+.contribution-legend {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 0.8rem;
+}
+
+.legend-cell {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+}
+
+.legend-label {
+  margin: 0 8px;
+}
+
+.profile-metrics {
+  text-align: center;
+}
+
+.profile-metric {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-metric h4 {
+  color: #E48257;
+  margin-bottom: 2px;
+}
+
+.profile-highlights {
+  padding-left: 20px;
+}
+
+.profile-highlights li {
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .profile-avatar {
+    width: 100px;
+    height: 100px;
+  }
+
+  .profile-points-number {
+    font-size: 2rem;
+  }
+
+  .contribution-cell {
+    width: 10px;
+    height: 10px;
+  }
+
+  .legend-cell {
+    width: 10px;
+    height: 10px;
+  }
+
+  .week-column {
+    gap: 2px;
+  }
+
+  .contribution-grid {
+    gap: 2px;
+  }
+}
+
+@media (max-width: 576px) {
+  .profile-page .row {
+    --bs-gutter-x: 1rem;
+  }
+
+  .profile-card {
+    margin-bottom: 1rem;
+  }
+
+  .contribution-grid {
+    justify-content: flex-start;
+  }
+}
