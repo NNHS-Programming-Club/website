@@ -1,101 +1,131 @@
 select {
-    padding: 8px;
-    border-radius: 8px;
+  padding: 8px;
+  border-radius: 8px;
 }
 
 button {
-    padding: 4px;
-    border-radius: 8px;
-    border: none;
-    margin: 2px;
+  padding: 4px;
+  border-radius: 8px;
+  border: none;
+  margin: 2px;
 }
 
 .dailyProblem {
-    display: flex;
-    height: calc(100vh - 100px);
-    width: 100%;
+  display: flex;
+  height: calc(100vh - 100px);
+  width: 100%;
 }
 
 .problemDesc {
-    /* left side problem description panel */
-    height: 100%;
-    flex-shrink: 0;
-    border: 1px solid #868076;
-    border-radius: 8px;
-    padding: 16px;
-    margin: 8px;
-    margin-bottom: 16px;
-    overflow: auto;
+  /* left side problem description panel */
+  height: 100%;
+  flex-shrink: 0;
+  border: 1px solid #868076;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 8px;
+  margin-bottom: 16px;
+  overflow: auto;
 }
 
 .rightColumn {
-    /* right side code editor column */
-    height: 100%;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    margin-right: 8px;
-    overflow: hidden;
+  /* right side code editor column */
+  height: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-right: 8px;
+  overflow: hidden;
 }
 
-.rightColumn > div:first-child {
-    /* CodeEditor container */
-    flex-shrink: 0;
-    margin: 8px;
-    overflow: hidden;
+.rightColumn>div:first-child {
+  /* CodeEditor container */
+  flex-shrink: 0;
+  margin: 8px;
+  overflow: hidden;
 }
 
 .languageSelector {
-    margin-bottom: 8px;
+  margin-bottom: 8px;
 }
 
 .languageSelector label {
-    display: block;
-    margin-bottom: 4px;
-    font-weight: bold;
+  display: block;
+  margin-bottom: 4px;
+  font-weight: bold;
 }
 
 .controls-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .bottomRight {
-    display: flex;
-    flex: 1;
-    overflow: hidden;
-    margin: 8px;
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  margin: 8px;
 }
 
 .inputContainer {
-    /* stdin / controls panel on the left under the problem description */
-    border: 1px solid #868076;
-    padding: 8px;
-    border-radius: 4px;
-    margin-right: 8px;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
+  /* stdin / controls panel on the left under the problem description */
+  border: 1px solid #868076;
+  padding: 8px;
+  border-radius: 4px;
+  margin-right: 8px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .inputContainer textarea {
-    flex: 1;
-    resize: none;
-    margin-bottom: 8px;
+  flex: 1;
+  resize: none;
+  margin-bottom: 8px;
 }
 
 .outputContainer {
-    border: 1px solid #868076;
-    padding: 8px;
-    border-radius: 4px;
-    flex: 1;
-    overflow: auto;
+  border: 1px solid #868076;
+  padding: 8px;
+  border-radius: 4px;
+  flex: 1;
+  overflow: auto;
 }
 
 .outputContainer pre {
-    margin: 0;
-    white-space: pre-wrap;
-    word-wrap: break-word;
+  margin: 0;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.overlay-blur {
+  position: fixed;
+  top: 58px;
+  left: 0;
+  width: 100vw;
+  height: calc(100vh - 58px);
+  backdrop-filter: blur(7px) brightness(0.9);
+  background: rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  pointer-events: all;
+}
+
+.overlay-center-content {
+  backdrop-filter: blur(10px) brightness(0.5);
+  background: rgba(0, 0, 0, 0.1);
+}
+.overlay-center-content h2 {
+  color: #F2EDD7;
+}
+
+.overlay-center-content {
+  border-radius: 16px;
+  padding: 40px 40px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.15);
+  text-align: center;
 }

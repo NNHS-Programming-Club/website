@@ -13,7 +13,7 @@ export default function Navbar() {
   };
 
   const { userLoggedIn } = useAuth();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
     const htmlElement = document.querySelector('html');
@@ -68,7 +68,7 @@ export default function Navbar() {
                     
                   </li>
                   <li className="nav-item">
-                    <button onClick={() => { doSignOut().then(() => { navigate('/login') }) }} className="btn btn-primary">Logout</button>
+                    <button onClick={() => { doSignOut().then(() => { navigate('/login') }) }} className="btn btn-secondary">Logout</button>
                   </li>
               </>
 
