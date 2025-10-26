@@ -13,8 +13,8 @@ import Profile from './pages/Profile';
 import Members from './pages/Members'
 import Events from './pages/Events';
 import Error404 from './pages/Error404'
-import Login from './components/Login';
-import Register from './components/Register';
+import Login from './pages/Login';
+import Register from './pages/Register';
 import { AuthProvider } from './contexts/authContext';
 import DailyProblem from './pages/DailyProblem';
 

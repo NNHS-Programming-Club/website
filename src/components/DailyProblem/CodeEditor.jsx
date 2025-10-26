@@ -1,6 +1,6 @@
 import React, { useMemo, useEffect, useRef, useCallback, forwardRef } from 'react';
 import Editor from '@monaco-editor/react';
-import { monacoLanguageMap } from '../constants';
+import { monacoLanguageMap } from '../../constants';
 
 const CodeEditor = forwardRef(({ value, onChange, languageId = '92', height = '400px'}, ref) => {
   const editorRef = useRef(null);

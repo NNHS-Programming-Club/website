@@ -146,15 +146,6 @@
   margin-bottom: 2px;
 }
 
-.profile-highlights {
-  padding-left: 20px;
-}
-
-.profile-highlights li {
-  margin-bottom: 8px;
-  line-height: 1.5;
-}
-
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .profile-avatar {

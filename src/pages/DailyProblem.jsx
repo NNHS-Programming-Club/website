@@ -2,9 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import './DailyProblem.css';
 import { makeSubmissionAndGetToken, getSubmission } from '../api/judge0-api';
 import { GET_SUBMISSION_DELAY } from '../constants';
-import CodeEditor from '../components/CodeEditor';
-import ResizeBar from '../components/ResizeBar';
+import CodeEditor from '../components/DailyProblem/CodeEditor';
+import ResizeBar from '../components/DailyProblem/ResizeBar';
 import { getDailyProblem } from '../firebase/auth';
+import { useAuth } from '../contexts/authContext';
+import { useNavigate } from 'react-router-dom';
 
 export default function DailyProblem() {
   // State management
@@ -28,6 +30,9 @@ export default function DailyProblem() {
   // Refs for resize targets
   const problemDescRef = useRef(null);
   const codeEditorContainerRef = useRef(null);
+
+  const { userLoggedIn, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
 
   // Calculate constraints based on window size percentages
   const getLeftPanelConstraints = () => {
@@ -215,6 +220,14 @@ export default function DailyProblem() {
 
   return (
     <div className="dailyProblem">
+      {!authLoading && !userLoggedIn && (
+        <div className="overlay-blur">
+          <div className="overlay-center-content">
+            <h2>You must be logged in to access the Daily Problem page.</h2>
+            <button className="btn btn-primary" onClick={() => navigate('/login')}>Login</button>
+          </div>
+        </div>
+      )}
       <div 
         ref={problemDescRef}
         className="problemDesc"
@@ -264,7 +277,6 @@ export default function DailyProblem() {
         targetElement={problemDescRef.current}
       />
 
-      {dailyProblem && !isLoadingProblem && !problemError && (
         <div className="rightColumn">
           <CodeEditor
             ref={codeEditorContainerRef}
@@ -336,7 +348,6 @@ export default function DailyProblem() {
             </div>
           </div>
         </div>
-      )}
     </div>
   );
 }
