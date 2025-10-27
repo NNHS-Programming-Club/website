@@ -10,6 +10,7 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setconfirmPassword] = useState("");
+  const [fullName, setFullName] = useState("");
   const [isRegistering, setIsRegistering] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -20,6 +21,13 @@ const Register = () => {
     if (!isRegistering) {
       setIsRegistering(true);
       setErrorMessage(""); // Clear any previous error messages
+
+      // Validate Full Name
+      if (!fullName.trim()) {
+        setErrorMessage("Full Name is required");
+        setIsRegistering(false);
+        return;
+      }
 
       // Check email format
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -44,26 +52,11 @@ const Register = () => {
       }
 
       try {
-        await doCreateUserWithEmailAndPassword(email, password);
-        // Registration successful - user will be redirected
+        await doCreateUserWithEmailAndPassword(email, password, fullName);
+        navigate("/profile");
       } catch (error) {
         console.error("Registration error:", error);
-        // Handle different types of Firebase auth errors
-        let errorMsg = "An error occurred during registration";
-        if (error.code === "auth/email-already-in-use") {
-          errorMsg = "An account with this email already exists";
-        } else if (error.code === "auth/invalid-email") {
-          errorMsg = "Invalid email address";
-        } else if (error.code === "auth/weak-password") {
-          errorMsg =
-            "Password is too weak. Please choose a stronger password";
-        } else if (error.code === "auth/operation-not-allowed") {
-          errorMsg =
-            "Email/password accounts are not enabled. Please contact support";
-        } else if (error.code === "auth/too-many-requests") {
-          errorMsg = "Too many attempts. Please try again later";
-        }
-        setErrorMessage(errorMsg);
+        setErrorMessage(error.message || "An error occurred during registration");
       } finally {
         setIsRegistering(false);
       }
@@ -72,7 +65,7 @@ const Register = () => {
 
   return (
     <>
-      {userLoggedIn && <Navigate to={"/"} replace={true} />}
+      {userLoggedIn && <Navigate to={"/profile"} replace={true} />}
       <main className="mainlogin">
         <div className="loginCard">
           <div className="loginCardWrapped">
@@ -89,6 +82,17 @@ const Register = () => {
               </div>
             </div>
             <form onSubmit={onSubmit} className="enterForm">
+              <div>
+                <input
+                  placeholder="Full Name"
+                  type="text"
+                  required
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  className="enterInput"
+                  disabled={isRegistering}
+                />
+              </div>
               <div>
                 {/* <label className="text-sm text-gray-600 font-bold">
                 Email

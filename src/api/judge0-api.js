@@ -1,3 +1,5 @@
+import { GET_SUBMISSION_DELAY } from '../constants';
+
 export async function makeSubmissionAndGetToken(languageId, code, stdin, expectedOutput) {
   const url = 'https://judge0-ce.p.rapidapi.com/submissions?base64_encoded=true&wait=false&fields=*';
   
@@ -54,3 +56,37 @@ export async function getSubmission(token) {
     throw new Error('Unable to retrieve your code execution results. Please try again.');
   }
 }
+
+// Function that handles the actual Judge0 submission logic
+export async function uploadToJudge0(languageId, code, stdin, expectedOutput) {
+  let token = await makeSubmissionAndGetToken(languageId, code, stdin, expectedOutput);
+  console.log("Submission token: ", token);
+
+  if (!token) {
+    throw new Error('Unable to submit your code to the execution server. Please check your connection and try again.');
+  }
+
+  while (true) {
+    const submission = await getSubmission(token);
+    console.log("Submission: ", submission);
+
+    if (!submission) {
+      throw new Error('Unable to retrieve your code execution results. The execution server may be temporarily unavailable.');
+    }
+
+    const statusCode = submission.status.id;
+
+    // If still processing, show status and wait
+    if (statusCode === 1) {
+      await new Promise(resolve => setTimeout(resolve, GET_SUBMISSION_DELAY));
+      continue;
+    }
+    if (statusCode === 2) {
+      await new Promise(resolve => setTimeout(resolve, GET_SUBMISSION_DELAY));
+      continue;
+    }
+
+    // Return the final submission result
+    return submission;
+  }
+};

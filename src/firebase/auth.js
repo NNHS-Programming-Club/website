@@ -10,7 +10,7 @@ import {
   GoogleAuthProvider,
 } from "firebase/auth";
 
-export const doCreateUserWithEmailAndPassword = async (email, password) => {
+export const doCreateUserWithEmailAndPassword = async (email, password, fullName) => {
   try {
     // Step 1: Check email availability in the emails collection
     const emailDoc = await getDoc(doc(db, "emails", email));
@@ -26,6 +26,7 @@ export const doCreateUserWithEmailAndPassword = async (email, password) => {
     const userProfile = {
       uid: user.uid,
       email: email,
+      name: fullName,
       bio: "",
       points: 0,
       createdAt: new Date(),
@@ -49,7 +50,6 @@ export const doCreateUserWithEmailAndPassword = async (email, password) => {
     
     return userCredential;
   } catch (error) {
-    console.error('Registration error details:', error);
     throw error;
   }
 };
@@ -86,6 +86,7 @@ export const doSignInWithGoogle = async () => {
     const userProfile = {
       uid: user.uid,
       email: user.email,
+      name: user.displayName,
       bio: "",
       points: 0,
       createdAt: new Date(),

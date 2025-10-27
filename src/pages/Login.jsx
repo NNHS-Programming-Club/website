@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Navigate, Link } from "react-router-dom";
+import { Navigate, Link, useNavigate } from "react-router-dom";
 import {
   doSignInWithEmailAndPassword,
   doSignInWithGoogle,
@@ -11,6 +11,7 @@ import "./RegisterLogin.css";
 
 const Login = () => {
   const { userLoggedIn } = useAuth();
+  const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -34,6 +35,7 @@ const Login = () => {
 
       try {
         await doSignInWithEmailAndPassword(email, password);
+        navigate("/profile");
         // doSendEmailVerification()
       } catch (error) {
         console.error("Login error:", error);
@@ -65,6 +67,7 @@ const Login = () => {
       setErrorMessage(""); // Clear any previous error messages
       try {
         await doSignInWithGoogle();
+        navigate("/profile");
       } catch (error) {
         console.error("Google sign-in error:", error);
         let errorMsg = "An error occurred during Google sign in";
@@ -109,7 +112,7 @@ const Login = () => {
 
   return (
     <div>
-      {userLoggedIn && <Navigate to={"/"} replace={true} />}
+      {userLoggedIn && <Navigate to={"/profile"} replace={true} />}
 
       <main className="mainlogin">
         <div className="loginCard">

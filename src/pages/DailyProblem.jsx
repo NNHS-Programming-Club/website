@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './DailyProblem.css';
-import { makeSubmissionAndGetToken, getSubmission } from '../api/judge0-api';
-import { GET_SUBMISSION_DELAY } from '../constants';
+import { uploadToJudge0 } from '../api/judge0-api';
 import CodeEditor from '../components/DailyProblem/CodeEditor';
 import ResizeBar from '../components/DailyProblem/ResizeBar';
 import { getDailyProblem } from '../firebase/auth';
 import { useAuth } from '../contexts/authContext';
 import { useNavigate } from 'react-router-dom';
+import { getStorage, ref, getDownloadURL } from 'firebase/storage'; // Add to your imports
+import { app } from '../firebase/firebase'; // Ensure you are importing the initialized Firebase app
 
 export default function DailyProblem() {
   // State management
@@ -92,83 +93,45 @@ export default function DailyProblem() {
     return () => window.removeEventListener('resize', handleWindowResize);
   }, []);
 
-  // Helper function to format submission result
-  const formatSubmissionResult = (submission, expectedOutput, isRunCode) => {
+  const formatSubmissionResult = (submission, testCaseNum) => {
     const statusCode = submission.status.id;
-
-    let outputText = "";
-    if (submission.stdout !== null) {
-      outputText = atob(submission.stdout);
-    }
-
-    // Get execution time
-    const executionTime = submission.time ? `${submission.time}s` : 'N/A';
-    const memoryUsed = submission.memory ? `${submission.memory}KB` : 'N/A';
 
     let resultText = "";
     if (statusCode === 3) {
-      if (!isRunCode) {
-        resultText = "✅ Accepted\n\n";
-      }
-      resultText += "Output:\n" + outputText;
+      resultText = "✅ Correct Answer";
     } else if (statusCode === 4) {
-      if (!isRunCode) {
-        resultText = "❌ Wrong Answer\n\nYour output:\n" + outputText;
-        resultText += "\n\nExpected output:\n" + expectedOutput;
-      } else {
-        resultText = "Output:\n" + outputText;
-      }
+      resultText = "❌ Wrong Answer";
     } else if (statusCode === 5) {
       resultText = "⏰ Time Limit Exceeded";
     } else if (statusCode === 6) {
-      resultText = "🔨 Compilation Error\n\n" + atob(submission.compile_output);
+      resultText = "🔨 Compilation Error";
     } else if (statusCode >= 7) {
-      resultText = "💥 " + submission.status.description + "\n\nError:\n" + atob(submission.stderr);
+      resultText = "💥 Runtime Error";
     }
-
-    // Add execution time and memory info
-    resultText += `\n\nExecution Time: ${executionTime}`;
-    resultText += `\nMemory Used: ${memoryUsed}`;
 
     return resultText;
   };
 
-  // Function that handles the actual Judge0 submission logic
-  const submitCodeToJudge0 = async (languageId, code, stdin, expectedOutput) => {
-    setOutput('Uploading your code...');
+  // Helper function to format submission result
+  const formatRunResult = (submission) => {
+    const statusCode = submission.status.id;
 
-    let token = await makeSubmissionAndGetToken(languageId, code, stdin, expectedOutput);
-    console.log("Submission token: ", token);
-
-    if (!token) {
-      throw new Error('Unable to submit your code to the execution server. Please check your connection and try again.');
+    let resultText = "";
+    if (statusCode === 6) {
+      resultText = "🔨 Compilation Error\n\n" + atob(submission.compile_output);
+    } else if (statusCode >= 7) {
+      resultText = "💥 " + submission.status.description + "\n\nError:\n" + atob(submission.stderr);
+    } else {
+      resultText = "Output:\n" + atob(submission.stdout);
     }
 
-    while (true) {
-      const submission = await getSubmission(token);
-      console.log("Submission: ", submission);
+    // Add execution time and memory info
+    const executionTime = submission.time ? `${submission.time}s` : 'N/A';
+    const memoryUsed = submission.memory ? `${submission.memory}KB` : 'N/A';
+    resultText += `\n\nExecution Time: ${executionTime}`;
+    resultText += `\nMemory Used: ${memoryUsed}`;
 
-      if (!submission) {
-        throw new Error('Unable to retrieve your code execution results. The execution server may be temporarily unavailable.');
-      }
-
-      const statusCode = submission.status.id;
-
-      // If still processing, show status and wait
-      if (statusCode === 1) {
-        setOutput('In Queue...');
-        await new Promise(resolve => setTimeout(resolve, GET_SUBMISSION_DELAY));
-        continue;
-      }
-      if (statusCode === 2) {
-        setOutput('Processing...');
-        await new Promise(resolve => setTimeout(resolve, GET_SUBMISSION_DELAY));
-        continue;
-      }
-
-      // Return the final submission result
-      return submission;
-    }
+    return resultText;
   };
 
   // Event handlers
@@ -180,11 +143,11 @@ export default function DailyProblem() {
 
     setIsRunning(true);
     setError(null);
-    setOutput('Setting up...');
+    setOutput('Uploading and running...');
 
     try {
-      const submission = await submitCodeToJudge0(parseInt(language), code, stdin, null);
-      const resultText = formatSubmissionResult(submission, null, true);
+      const submission = await uploadToJudge0(parseInt(language), code, stdin, null);
+      const resultText = formatRunResult(submission);
       setOutput(resultText);
     } catch (error) {
       console.error('Error running code:', error);
@@ -203,12 +166,47 @@ export default function DailyProblem() {
 
     setIsSubmitting(true);
     setError(null);
-    setOutput('Submitting code...');
+    setOutput('Fetching test cases...');
 
     try {
-      const submission = await submitCodeToJudge0(parseInt(language), code, stdin, '');
-      const resultText = formatSubmissionResult(submission, '', false);
-      setOutput(resultText);
+      // 1. Fetch test cases JSON from Firebase Storage using the Storage SDK
+      let testCases = [];
+      if (!dailyProblem?.testCasesStorageUrl) {
+        throw new Error('No test cases URL found for this problem.');
+      }
+      // Extract path (after bucket name)
+      const storageUrl = dailyProblem.testCasesStorageUrl;
+      // E.g. from https://storage.googleapis.com/nnhs-programming-club-website.appspot.com/test-cases/123.json get 'test-cases/123.json'
+      const match = storageUrl.match(/googleapis.com\/[^/]+\/(.+)/);
+      const filePath = match ? match[1] : null;
+      if (!filePath) throw new Error('Could not parse test cases path from URL.');
+      const storage = getStorage(app);
+      const fileRef = ref(storage, filePath);
+      const url = await getDownloadURL(fileRef);
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('Failed to fetch test cases JSON from storage.');
+      testCases = await res.json(); // [{in:..., out:...}, ...]
+      if (!Array.isArray(testCases) || testCases.length === 0) throw new Error('No test cases available.');
+
+      // 2. Run the submission for each test case in order
+      setOutput(`Running ${testCases.length} test cases...\n\n`)
+      let testsPassed = 0;
+      for (let i = 0; i < testCases.length; ++i) {
+        const t = testCases[i];
+        let submission;
+        try {
+          submission = await uploadToJudge0(parseInt(language), code, t.in, t.out);
+          if (submission.status.id == 3) { testsPassed++; }
+          setOutput(prev => prev + `Test Case #${i+1}: ${formatSubmissionResult(submission, t.out, false)}\n`);
+        } catch (err) {
+          setOutput(prev => prev + `Test Case #${i+1}: ⚠️ Server Error\n`);
+        }
+      }
+
+      setOutput(prev => prev + `Passed ${testsPassed} out of ${testCases.length} test cases.\n`)
+
+      // TODO add submission stats to firebase
+
     } catch (error) {
       console.error('Error submitting code:', error);
       setError(error.message);
