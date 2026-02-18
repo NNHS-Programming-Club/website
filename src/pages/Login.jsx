@@ -138,24 +138,18 @@ const Login = () => {
                 autoComplete="email"
                 required
                 value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                }}
-                className="form-control mb-3"
+                onChange={(e) => setEmail(e.target.value)}
+                className="form-control mb-3 enterInput"
               />
-            </div>
 
-            <div>
               <input
                 placeholder="Password"
                 type="password"
                 autoComplete="current-password"
                 required
                 value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                }}
-                className="form-control mb-3"
+                onChange={(e) => setPassword(e.target.value)}
+                className="form-control mb-3 enterInput"
               />
             </div>
 
