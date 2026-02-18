@@ -81,23 +81,23 @@
   width: 100%;
   padding: 7px;
   border-radius: 10px;
-  border: 2px solid #473f3f; /* keeps the border */
-  background-color: transparent; /* transparent background */
-  color: #a19090; /* text color */
+  border: 2px solid #473f3f;
+  background-color: transparent;
+  color: #a19090;
   transition: border 0.3s ease, box-shadow 0.3s ease;
 }
 
 .enterInput:focus {
   outline: none;
-  border: 2px solid #e48257; /* orange glow */
-  box-shadow: 0 0 8px #e48257; /* optional glow */
+  border: 2px solid #e48257;
+  box-shadow: 0 0 8px #e48257;
 }
 .enterInput::placeholder {
   color: #a19090;
 }
 
 .enterInput::placeholder {
-  color: #a19090; /* placeholder stays readable */
+  color: #a19090;
 }
 
 .enterSubmit {
