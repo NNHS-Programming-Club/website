@@ -14,7 +14,6 @@
   width: 85%;
   /* height: 550px; */
   padding-bottom: 2.5rem;
-
 }
 
 .cardWrapper {
@@ -39,6 +38,19 @@
   width: calc(50px + 5%);
   margin-top: 5%;
   margin-bottom: 3%;
+  transition: opacity 0.3s ease;
+}
+
+.logo-dark {
+  display: none;
+}
+
+[data-bs-theme="dark"] .logo-light {
+  display: none;
+}
+
+[data-bs-theme="dark"] .logo-dark {
+  display: block;
 }
 
 .enterTitle {
@@ -87,7 +99,7 @@
   margin-top: 5px;
   border-radius: 10px;
   height: 40px;
-  transition: background-color .3s ease;
+  transition: background-color 0.3s ease;
   font-weight: bold;
 }
 
@@ -115,4 +127,17 @@
   font-size: 12px;
   text-align: center;
   margin-top: 2px;
+}
+
+.btn-google {
+  background-color: transparent;
+  border: 1px solid var(--bs-border-color);
+  color: var(--bs-body-color);
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-google:hover {
+  background-color: #e48257;
+  border-color: #c1501f;
+  color: white;
 }
