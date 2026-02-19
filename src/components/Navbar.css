@@ -1,18 +1,59 @@
 .logo {
   width: 50px;
+  height: 50px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+/* Remove extra navbar padding */
+.navbar {
+  padding-top: 0.4rem !important;
+  padding-bottom: 0.4rem !important;
+}
+
+/* Remove container padding if needed */
+.container-fluid {
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
 }
 
 .social-logo {
   width: 30px;
 }
 
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  max-width: 50px;
+  height: 50px;
+}
+.navbar-nav {
+  align-items: flex-start !important;
+}
+.navbar-collapse {
+  align-items: flex-start !important;
+}
+
 .navbar-nav .nav-link:hover {
-  color: #E48257;
+  color: #e48257;
+}
+
+.navbar-nav .nav-link,
+.navbar-nav .btn {
+  white-space: nowrap;
+}
+
+.horizontal-navbar .nav-item img {
+  vertical-align: middle;
+  display: inline-block;
+}
+
+.horizontal-navbar {
+  margin-top: 0 !important;
 }
 
 /* for mobile */
 @media (max-width: 991.98px) {
-
   .navbar-collapse .navbar-nav {
     flex-direction: row;
     flex-wrap: wrap;
