@@ -116,12 +116,12 @@ const Login = () => {
         >
           <img
             className="tigerlogo logo-light"
-            src="/images/icons/tiger_icon-light.png"
+            src="/images/icons/welcome-light.png"
             alt="Tiger Logo"
           />
           <img
             className="tigerlogo logo-dark"
-            src="/images/icons/tiger_icon-dark.png"
+            src="/images/icons/welcome-dark.png"
             alt="Tiger Logo"
           />
 
