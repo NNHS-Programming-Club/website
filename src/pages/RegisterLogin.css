@@ -14,7 +14,6 @@
   width: 85%;
   /* height: 550px; */
   padding-bottom: 2.5rem;
-
 }
 
 .cardWrapper {
@@ -34,11 +33,24 @@
   position: relative;
 }
 
-.tigerlogo {
+.logo {
   height: calc(50px + 5%);
   width: calc(50px + 5%);
   margin-top: 5%;
   margin-bottom: 3%;
+  transition: opacity 0.3s ease;
+}
+
+.logo-dark {
+  display: none;
+}
+
+[data-bs-theme="dark"] .logo-light {
+  display: none;
+}
+
+[data-bs-theme="dark"] .logo-dark {
+  display: block;
 }
 
 .enterTitle {
@@ -70,13 +82,18 @@
   padding: 7px;
   border-radius: 10px;
   border: 2px solid #473f3f;
-  background-color: #393232;
-  color: #a19090 !important;
+  background-color: transparent;
+  color: #a19090;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
 }
 
 .enterInput:focus {
   outline: none;
-  /* border: 2px solid #e48257; */
+  border: 2px solid #e48257;
+  box-shadow: 0 0 8px #e48257;
+}
+.enterInput::placeholder {
+  color: #a19090;
 }
 
 .enterInput::placeholder {
@@ -87,7 +104,7 @@
   margin-top: 5px;
   border-radius: 10px;
   height: 40px;
-  transition: background-color .3s ease;
+  transition: background-color 0.3s ease;
   font-weight: bold;
 }
 
@@ -115,4 +132,17 @@
   font-size: 12px;
   text-align: center;
   margin-top: 2px;
+}
+
+.btn-google {
+  background-color: transparent;
+  border: 1px solid var(--bs-border-color);
+  color: var(--bs-body-color);
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-google:hover {
+  background-color: #e48257;
+  border-color: #c1501f;
+  color: white;
 }

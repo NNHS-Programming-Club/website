@@ -56,7 +56,9 @@ const Register = () => {
         navigate("/profile");
       } catch (error) {
         console.error("Registration error:", error);
-        setErrorMessage(error.message || "An error occurred during registration");
+        setErrorMessage(
+          error.message || "An error occurred during registration"
+        );
       } finally {
         setIsRegistering(false);
       }
@@ -66,106 +68,107 @@ const Register = () => {
   return (
     <>
       {userLoggedIn && <Navigate to={"/profile"} replace={true} />}
-      <main className="mainlogin">
-        <div className="loginCard">
-          <div className="loginCardWrapped">
-            <img
-              className="tigerlogo"
-              src="images/icons/plus icon.png"
-              alt="Plus Icon"
-            />
-            <div className="text-center mb-6">
-              <div className="mt-2">
-                <h3 className="enterTitle">
-                  Create a New Account
-                </h3>
-              </div>
+      <main className="container d-flex justify-content-center align-items-center py-5">
+        <div
+          className="loginCardWrapped card bg-body text-body shadow-lg p-4 rounded-4"
+          style={{ maxWidth: "420px", width: "100%" }}
+        >
+          <img
+            className="logo logo-light"
+            src="/images/icons/plus-light.png"
+            alt="Create-light"
+          />
+          <img
+            className="logo logo-dark"
+            src="/images/icons/plus-dark.png"
+            alt="Create-dark"
+          />
+          <div className="text-center mb-6">
+            <div className="mt-2">
+              <h3 className="enterTitle">Create a New Account</h3>
             </div>
-            <form onSubmit={onSubmit} className="enterForm">
-              <div>
-                <input
-                  placeholder="Full Name"
-                  type="text"
-                  required
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  className="enterInput"
-                  disabled={isRegistering}
-                />
-              </div>
-              <div>
-                {/* <label className="text-sm text-gray-600 font-bold">
+          </div>
+          <form onSubmit={onSubmit} className="enterForm">
+            <div>
+              <input
+                placeholder="Full Name"
+                type="text"
+                required
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                className="form-control mb-2 enterInput"
+                disabled={isRegistering}
+              />
+            </div>
+            <div>
+              {/* <label className="text-sm text-gray-600 font-bold">
                 Email
               </label> */}
-                <input
-                  placeholder="Email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  value={email}
-                  onChange={(e) => {
-                    setEmail(e.target.value);
-                  }}
-                  className="enterInput"
-                />
-              </div>
+              <input
+                placeholder="Email"
+                type="email"
+                autoComplete="email"
+                required
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                }}
+                className="form-control mb-2 enterInput"
+              />
+            </div>
 
+            <div>
+              <input
+                placeholder="Password"
+                disabled={isRegistering}
+                type="password"
+                autoComplete="new-password"
+                required
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                }}
+                className="form-control mb-2 enterInput"
+              />
+            </div>
+            {password && (
               <div>
                 <input
-                  placeholder="Password"
+                  placeholder="Confirm Password"
                   disabled={isRegistering}
                   type="password"
-                  autoComplete="new-password"
+                  autoComplete="off"
                   required
-                  value={password}
+                  value={confirmPassword}
                   onChange={(e) => {
-                    setPassword(e.target.value);
+                    setconfirmPassword(e.target.value);
                   }}
-                  className="enterInput"
+                  className="form-control mb-2 enterInput"
                 />
               </div>
-              {password && (
-                <div>
-                  <input
-                    placeholder="Confirm Password"
-                    disabled={isRegistering}
-                    type="password"
-                    autoComplete="off"
-                    required
-                    value={confirmPassword}
-                    onChange={(e) => {
-                      setconfirmPassword(e.target.value);
-                    }}
-                    className="enterInput"
-                  />
-                </div>
-              )}
+            )}
 
-              {errorMessage && (
-                <span className="errMSG">{errorMessage}</span>
-              )}
+            {errorMessage && <span className="errMSG">{errorMessage}</span>}
 
-              <button
-                type="submit"
-                disabled={isRegistering}
-                className={`enterSubmit ${email && password && confirmPassword
-                  ? "enterActivated"
-                  : "enterDeactivated"
-                  }`}
+            <button
+              type="submit"
+              disabled={
+                isRegistering || !password || !email || !confirmPassword
+              }
+              className="btn btn-primary w-100"
+            >
+              {isRegistering ? "Signing Up..." : "Sign Up"}
+            </button>
+            <div className="switchEnter align-items-center my-2">
+              Already have an account? {"   "}
+              <Link
+                to={"/login"}
+                className="text-center text-sm hover:underline font-bold"
               >
-                {isRegistering ? "Signing Up..." : "Sign Up"}
-              </button>
-              <div className="switchEnter">
-                Already have an account? {"   "}
-                <Link
-                  to={"/login"}
-                  className="text-center text-sm hover:underline font-bold"
-                >
-                  Log In
-                </Link>
-              </div>
-            </form>
-          </div>
+                Log In
+              </Link>
+            </div>
+          </form>
         </div>
       </main>
     </>
