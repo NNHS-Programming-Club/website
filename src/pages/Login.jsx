@@ -157,7 +157,7 @@ const Login = () => {
               <button
                 type="button"
                 onClick={onForgotPassword}
-                className="btn btn-link p-0 text-decoration-none"
+                className="btn btn-link p-0 text-decoration-none mb-3"
                 style={{ fontSize: "0.75rem" }}
               >
                 Forgot Password?
@@ -178,21 +178,23 @@ const Login = () => {
               {isSigningIn ? "Signing In..." : "Sign In"}
             </button>
           </form>
-          <p className="switchEnter">
+          <p className="switchEnter align-items-center my-2">
             Don't have an account?{" "}
             <Link to={"/register"} className="hover:underline font-bold">
               Sign up
             </Link>
           </p>
-          <div className="flex flex-row text-center w-full">
-            <div className="border-b-2 mb-2.5 mr-2 w-full"></div>
-            <div className="text-sm font-bold w-fit">OR</div>
-            <div className="border-b-2 mb-2.5 ml-2 w-full"></div>
+          <div className="d-flex align-items-center my-2">
+            <div className="flex-grow-1 border-top"></div>
+            <span className="px-3 fw-semibold small text-body-secondary">
+              OR
+            </span>
           </div>
+
           <button
             disabled={isSigningIn}
             onClick={onGoogleSignIn}
-            className="btn btn-google w-100 d-flex align-items-center justify-content-center gap-2"
+            className="btn btn-google w-100 d-flex align-items-center justify-content-center my-2 gap-2"
           >
             <img
               src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
