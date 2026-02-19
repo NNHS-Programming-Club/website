@@ -49,8 +49,8 @@ export default function Navbar() {
           </button>
 
           <div className="collapse navbar-collapse" id="navbarNav">
+            {/* Left-side links */}
             <ul className="navbar-nav flex-column flex-lg-row me-lg-auto align-items-start align-items-lg-center">
-              {/*Left Side Links */}
               <li className="nav-item">
                 <Link to="/about" className="nav-link">
                   About
@@ -78,95 +78,44 @@ export default function Navbar() {
               </li>
             </ul>
 
-            <ul className="navbar-nav horizontal-navbar flex-column flex-lg-row ms-lg-auto align-items-center mt-2 mt-lg-0">
-              {/*Right Side Login + Icons */}
-              {userLoggedIn ? (
-                <>
-                  <li className="nav-item">
-                    {!darkMode && (
-                      <Link to="/profile" className="nav-link">
-                        <img
-                          className="social-logo"
-                          src="images/icons/user-dark.svg"
-                          alt="User icon"
-                        />
-                      </Link>
-                    )}
-
-                    {darkMode && (
-                      <Link to="/profile" className="nav-link">
-                        <img
-                          className="social-logo"
-                          src="images/icons/user-light.svg"
-                          alt="User icon"
-                        />
-                      </Link>
-                    )}
-                  </li>
-                  <li className="nav-item">
-                    <button
-                      onClick={() => {
-                        doSignOut().then(() => {
-                          navigate("/login");
-                        });
-                      }}
-                      className="btn btn-secondary"
-                    >
-                      Logout
-                    </button>
-                  </li>
-                </>
-              ) : (
-                <>
-                  <li className="nav-item me-2">
-                    <Link to="/login" className="nav-link">
-                      Log In
-                    </Link>
-                  </li>
-                  <li className="nav-item">
-                    <Link to="/register">
-                      <button type="button" className="btn btn-primary">
-                        Sign Up
-                      </button>
-                    </Link>
-                  </li>
-                </>
-              )}
+            {/* Login / Sign Up Buttons */}
+            <ul className="navbar-nav d-flex flex-row align-items-center mt-2 mt-lg-0">
+              <li className="nav-item me-2">
+                <Link to="/login" className="nav-link">
+                  Log In
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/register">
+                  <button type="button" className="btn btn-primary">
+                    Sign Up
+                  </button>
+                </Link>
+              </li>
             </ul>
-            <ul className="navbar-nav horizontal-navbar flex-column flex-lg-row ms-lg-3 align-items-center mt-2 mt-lg-0">
-              <li className="nav-item ms-3 d-flex align-items-center">
-                {!darkMode && (
-                  <img
-                    src={darkIconPath}
-                    onMouseOver={() =>
-                      setDarkIconPath("images/icons/dark-mode-hover.svg")
-                    }
-                    onMouseLeave={() =>
-                      setDarkIconPath("images/icons/dark-mode.svg")
-                    }
-                    onClick={toggleTheme}
-                    className="social-logo"
-                    alt="Dark mode icon"
-                  />
-                )}
 
-                {darkMode && (
-                  <img
-                    src={lightIconPath}
-                    onMouseOver={() =>
-                      setLightIconPath("images/icons/light-mode-hover.svg")
-                    }
-                    onMouseLeave={() =>
-                      setLightIconPath("images/icons/light-mode.svg")
-                    }
-                    onClick={toggleTheme}
-                    className="social-logo"
-                    alt="Light mode icon"
-                  />
-                )}
+            {/* 4 Icons */}
+            <ul className="navbar-nav d-flex flex-row align-items-center mt-2 mt-lg-0 ms-3">
+              <li className="nav-item me-2">
+                <img
+                  src={darkMode ? lightIconPath : darkIconPath}
+                  onMouseOver={() =>
+                    darkMode
+                      ? setLightIconPath("images/icons/light-mode-hover.svg")
+                      : setDarkIconPath("images/icons/dark-mode-hover.svg")
+                  }
+                  onMouseLeave={() =>
+                    darkMode
+                      ? setLightIconPath("images/icons/light-mode.svg")
+                      : setDarkIconPath("images/icons/dark-mode.svg")
+                  }
+                  onClick={toggleTheme}
+                  className="social-logo"
+                  alt={darkMode ? "Light mode icon" : "Dark mode icon"}
+                />
               </li>
 
-              <li className="nav-item ms-2">
+              <li className="nav-item me-2">
                 <Link
                   to="https://www.instagram.com/nnhsprogramming/"
                   target="_blank"
@@ -178,7 +127,8 @@ export default function Navbar() {
                   />
                 </Link>
               </li>
-              <li className="nav-item ms-2">
+
+              <li className="nav-item me-2">
                 <Link
                   to="https://www.facebook.com/groups/293459344434857/"
                   target="_blank"
@@ -190,31 +140,22 @@ export default function Navbar() {
                   />
                 </Link>
               </li>
-              <li className="nav-item ms-2 me-2">
-                {!darkMode && (
-                  <Link
-                    to="https://github.com/NNHS-Programming-Club"
-                    target="_blank"
-                  >
-                    <img
-                      className="social-logo"
-                      src="images/icons/github-dark.png"
-                      alt="Light GitHub logo"
-                    />
-                  </Link>
-                )}
-                {darkMode && (
-                  <Link
-                    to="https://github.com/NNHS-Programming-Club"
-                    target="_blank"
-                  >
-                    <img
-                      className="social-logo"
-                      src="images/icons/github-light.png"
-                      alt="Dark GitHub logo"
-                    />
-                  </Link>
-                )}
+
+              <li className="nav-item">
+                <Link
+                  to="https://github.com/NNHS-Programming-Club"
+                  target="_blank"
+                >
+                  <img
+                    className="social-logo"
+                    src={
+                      darkMode
+                        ? "images/icons/github-light.png"
+                        : "images/icons/github-dark.png"
+                    }
+                    alt="GitHub logo"
+                  />
+                </Link>
               </li>
             </ul>
           </div>
