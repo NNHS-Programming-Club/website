@@ -1,3 +1,29 @@
+.mainlogin {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: calc(550px + 10vh);
+}
+
+.loginCard {
+  /* border: 2px solid #e48257;*/
+  background-color: #2e2828;
+  border-radius: 30px;
+  max-width: 500px;
+  width: 85%;
+  /* height: 550px; */
+  padding-bottom: 2.5rem;
+}
+
+.cardWrapper {
+  width: calc(100% - 50px);
+  height: calc(100% - 50px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .loginCardWrapped {
   margin-top: 17px;
   display: flex;
@@ -80,6 +106,20 @@
   height: 40px;
   transition: background-color 0.3s ease;
   font-weight: bold;
+}
+
+.enterActivated {
+  background-color: #c1501f !important;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.enterDeactivated {
+  background-color: #231f1f;
+  color: #a0aec0;
+  border: none;
+  cursor: not-allowed !important;
 }
 
 .errMSG {
