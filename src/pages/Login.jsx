@@ -115,14 +115,14 @@ const Login = () => {
           style={{ maxWidth: "420px", width: "100%" }}
         >
           <img
-            className="tigerlogo logo-light"
+            className="logo logo-light"
             src="/images/icons/welcome-light.png"
-            alt="Tiger Logo"
+            alt="WelcomeLogo-light"
           />
           <img
-            className="tigerlogo logo-dark"
+            className="logo logo-dark"
             src="/images/icons/welcome-dark.png"
-            alt="Tiger Logo"
+            alt="WelcomeLogo-dark"
           />
 
           <div className="text-center">
@@ -149,7 +149,7 @@ const Login = () => {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="form-control mb-3 enterInput"
+                className="form-control mb-2 enterInput"
               />
             </div>
 
@@ -157,7 +157,7 @@ const Login = () => {
               <button
                 type="button"
                 onClick={onForgotPassword}
-                className="btn btn-link p-0 text-decoration-none mb-3"
+                className="btn btn-link p-0 text-decoration-none mb-2"
                 style={{ fontSize: "0.75rem" }}
               >
                 Forgot Password?
