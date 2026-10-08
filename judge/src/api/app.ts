@@ -1,5 +1,7 @@
 import Fastify from "fastify";
 import type { FastifyInstance } from "fastify";
+import cors from "@fastify/cors";
+import { config } from "../config.ts";
 import { registerErrorHandlers } from "./errors.ts";
 import { healthRoutes } from "./routes/health.ts";
 import { submissionsRoutes } from "./routes/submissions.ts";
@@ -16,6 +18,12 @@ export function buildApp(opts: BuildAppOptions = {}): FastifyInstance {
   });
 
   registerErrorHandlers(app);
+
+  app.register(cors, {
+    origin: config.corsOrigins,
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Authorization", "Content-Type"],
+  });
 
   app.register(healthRoutes);
   app.register(submissionsRoutes);

@@ -24,7 +24,12 @@ function execute(dir: string, { argv, stdin, limits }: RunRequest): Promise<RunR
     const [command, ...args] = argv;
     const maxBytes = limits.outputKb * 1024;
     const started = performance.now();
-    const child = spawn(command, args, { cwd: dir, windowsHide: true });
+    const child = spawn(command, args, {
+      cwd: dir,
+      windowsHide: true,
+      // Python on Windows would otherwise use the system code page for piped stdio.
+      env: { ...process.env, PYTHONUTF8: "1" },
+    });
 
     let killedBy: "timeout" | "output_limit" | undefined;
     const kill = (reason: "timeout" | "output_limit") => {

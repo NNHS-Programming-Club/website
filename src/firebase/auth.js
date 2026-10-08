@@ -179,10 +179,18 @@ export const getDailyProblem = async () => {
       throw new Error('No problems found in the database');
     }
     
+    // The judge only supports stdin/stdout, so problems that read and write files are left out.
     const problems = [];
     snapshot.forEach((doc) => {
-      problems.push({ id: doc.id, ...doc.data() });
+      const problem = { id: doc.id, ...doc.data() };
+      if (!/INPUT FORMAT \(file (\w+)\.in\):/i.test(problem.description)) {
+        problems.push(problem);
+      }
     });
+
+    if (problems.length === 0) {
+      throw new Error('No supported problems found in the database');
+    }
     
     // Use the seed to select a consistent random problem for today
     const randomIndex = seed % problems.length;

@@ -1,15 +1,15 @@
 const GET_SUBMISSION_DELAY = 500;
 
-const codeLanguageMap = {
-  cpp: 54, // (GCC 9.2.0)
-  python: 92, // (Python 3.11.2)
-  java: 91 // (JDK 17.0.6)
-}
+const JUDGE_API_URL = 'http://localhost:8080';
+const JUDGE_POLL_DELAY = 500;
 
 const monacoLanguageMap = {
-  '92': 'python',
-  '54': 'cpp',
-  '91': 'java'
+  python3: 'python',
+  cpp: 'cpp',
+  java: 'java'
 }
 
-export { GET_SUBMISSION_DELAY, codeLanguageMap, monacoLanguageMap };
+// Languages the judge can run; the others are only listed in the selector.
+const SUPPORTED_LANGUAGES = ['python3'];
+
+export { GET_SUBMISSION_DELAY, JUDGE_API_URL, JUDGE_POLL_DELAY, monacoLanguageMap, SUPPORTED_LANGUAGES };

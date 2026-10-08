@@ -4,3 +4,4 @@ dist-ssr
 *.local
 serviceAccountKey.json
 build
+judge/cache

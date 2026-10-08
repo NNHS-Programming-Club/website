@@ -2,6 +2,9 @@ import test from "node:test";
 import type { TestContext } from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
+import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
 import type { FastifyInstance } from "fastify";
 import { buildApp } from "../src/api/app.ts";
@@ -10,7 +13,20 @@ import { config } from "../src/config.ts";
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 
 const run = { mode: "run", language: "python3", code: "print(input())", stdin: "hello\n" };
-const submit = { mode: "submit", language: "python3", code: "print(1)", cpid: 1234 };
+const submit = {
+  mode: "submit",
+  language: "python3",
+  code: "print(1)",
+  cpid: 1234,
+  testCasesUrl: "https://usaco.org/current/data/prob1_bronze_dec20.zip",
+};
+
+// The submit above finds its case in the cache, so no test downloads anything.
+config.cacheDir = await mkdtemp(join(tmpdir(), "judge-cache-"));
+await mkdir(join(config.cacheDir, "1234"));
+await writeFile(join(config.cacheDir, "1234", "1.in"), "");
+await writeFile(join(config.cacheDir, "1234", "1.out"), "1\n");
+test.after(() => rm(config.cacheDir, { recursive: true, force: true }));
 
 function setup(t: TestContext) {
   const app = buildApp();
@@ -62,20 +78,6 @@ for (const [name, body] of [
   });
 }
 
-test("a submit ends in error because it is not implemented yet", async (t) => {
-  const app = setup(t);
-
-  const created = await app.inject({ method: "POST", url: "/submissions", payload: submit });
-  const { id } = created.json();
-
-  assert.deepEqual(await waitUntilFinished(app, id), {
-    id,
-    mode: "submit",
-    status: "error",
-    result: null,
-  });
-});
-
 test("a run executes the code and returns its output", { skip: !hasPython }, async (t) => {
   const app = setup(t);
 
@@ -91,7 +93,21 @@ test("a run executes the code and returns its output", { skip: !hasPython }, asy
   assert.equal(finished.result.truncated, false);
 });
 
-const invalidBodies: [string, Record<string, unknown>][] = [
+test("a run reads and writes non-ASCII text as UTF-8", { skip: !hasPython }, async (t) => {
+  const app = setup(t);
+
+  const created = await app.inject({
+    method: "POST",
+    url: "/submissions",
+    payload: { ...run, code: 'print(input(), len(input()), "✓")', stdin: "é✓\né✓\n" },
+  });
+  const finished = await waitUntilFinished(app, created.json().id);
+
+  assert.equal(finished.result.verdict, "OK");
+  assert.equal(finished.result.stdout.replace("\r\n", "\n"), "é✓ 2 ✓\n");
+});
+
+const invalidBodies:[string, Record<string, unknown>][] = [
   ["missing mode", without(run, "mode")],
   ["unknown mode", { ...run, mode: "debug" }],
   ["missing language", without(run, "language")],
@@ -108,6 +124,11 @@ const invalidBodies: [string, Record<string, unknown>][] = [
   ["submit without cpid", without(submit, "cpid")],
   ["fractional cpid", { ...submit, cpid: 1.5 }],
   ["string cpid", { ...submit, cpid: "1234" }],
+  ["submit without testCasesUrl", without(submit, "testCasesUrl")],
+  ["testCasesUrl on another host", { ...submit, testCasesUrl: "https://example.com/a.zip" }],
+  ["testCasesUrl on a lookalike host", { ...submit, testCasesUrl: "https://usaco.org.evil.com/a.zip" }],
+  ["http testCasesUrl", { ...submit, testCasesUrl: "http://usaco.org/a.zip" }],
+  ["malformed testCasesUrl", { ...submit, testCasesUrl: "not a url" }],
 ];
 
 for (const [name, body] of invalidBodies) {

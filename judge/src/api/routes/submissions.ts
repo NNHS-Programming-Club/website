@@ -17,6 +17,7 @@ const bodySchema = {
     code: { type: "string", minLength: 1, maxLength: MAX_CODE_BYTES },
     stdin: { type: "string", maxLength: MAX_STDIN_BYTES },
     cpid: { type: "integer" },
+    testCasesUrl: { type: "string", maxLength: 2048 },
   },
   allOf: [
     {
@@ -25,7 +26,7 @@ const bodySchema = {
     },
     {
       if: { properties: { mode: { const: "submit" } } },
-      then: { required: ["cpid"] },
+      then: { required: ["cpid", "testCasesUrl"] },
     },
   ],
 };
@@ -36,14 +37,25 @@ type SubmissionBody = {
   code: string;
   stdin?: string;
   cpid?: number;
+  testCasesUrl?: string;
 };
+
+// Temporary: the client supplies the test case URL until the judge looks problems up itself.
+function isUsacoUrl(value: string) {
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" && /^(www\.)?usaco\.org$/.test(url.hostname);
+  } catch {
+    return false;
+  }
+}
 
 export async function submissionsRoutes(app: FastifyInstance) {
   app.post<{ Body: SubmissionBody }>(
     "/submissions",
     { schema: { body: bodySchema }, bodyLimit: BODY_LIMIT },
     async (request, reply) => {
-      const { mode, language, code, stdin = "", cpid = 0 } = request.body;
+      const { mode, language, code, stdin = "", cpid = 0, testCasesUrl = "" } = request.body;
 
       // maxLength counts characters, not bytes.
       if (Buffer.byteLength(code) > MAX_CODE_BYTES) {
@@ -53,8 +65,14 @@ export async function submissionsRoutes(app: FastifyInstance) {
         return sendError(reply, 400, "invalid_request", "stdin must not be larger than 1MB");
       }
 
+      if (mode === "submit" && !isUsacoUrl(testCasesUrl)) {
+        return sendError(reply, 400, "invalid_request", "testCasesUrl must be an https://usaco.org URL");
+      }
+
       const id = await create(
-        mode === "run" ? { mode, language, code, stdin } : { mode, language, code, cpid },
+        mode === "run"
+          ? { mode, language, code, stdin }
+          : { mode, language, code, cpid, testCasesUrl },
       );
       return reply.code(202).send({ id });
     },

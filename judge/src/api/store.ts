@@ -1,12 +1,12 @@
 import { randomUUID } from "node:crypto";
 import { judgeSubmission } from "../judge/judge.ts";
-import type { JudgeResult } from "../judge/judge.ts";
+import type { JudgeResult, SubmitProgress } from "../judge/judge.ts";
 
 export type Language = "python3";
 
 export type NewSubmission =
   | { mode: "run"; language: Language; code: string; stdin: string }
-  | { mode: "submit"; language: Language; code: string; cpid: number };
+  | { mode: "submit"; language: Language; code: string; cpid: number; testCasesUrl: string };
 
 type Status = "queued" | "running" | "done" | "error";
 
@@ -14,13 +14,14 @@ export type SubmissionView = {
   id: string;
   mode: NewSubmission["mode"];
   status: Status;
-  result: JudgeResult | null;
+  // While a submit is running this is the progress so far.
+  result: JudgeResult | SubmitProgress | null;
 };
 
 type Stored = {
   submission: NewSubmission;
   status: Status;
-  result: JudgeResult | null;
+  result: SubmissionView["result"];
 };
 
 const submissions = new Map<string, Stored>();
@@ -46,7 +47,9 @@ export async function get(id: string): Promise<SubmissionView | undefined> {
 async function execute(id: string, stored: Stored) {
   stored.status = "running";
   try {
-    stored.result = await judgeSubmission(stored.submission, () => {});
+    stored.result = await judgeSubmission(stored.submission, (progress) => {
+      stored.result = progress;
+    });
     stored.status = "done";
   } catch (err) {
     console.error(`submission ${id} failed:`, err);

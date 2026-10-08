@@ -1,17 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './DailyProblem.css';
-import { uploadToJudge0 } from '../api/judge0-api';
+import { runCode, submitCode } from '../api/judge-api';
+import { SUPPORTED_LANGUAGES } from '../constants';
 import CodeEditor from '../components/DailyProblem/CodeEditor';
 import ResizeBar from '../components/DailyProblem/ResizeBar';
 import { getDailyProblem } from '../firebase/auth';
 import { useAuth } from '../contexts/authContext';
 import { useNavigate } from 'react-router-dom';
-import { getStorage, ref, getDownloadURL } from 'firebase/storage'; // Add to your imports
-import { app } from '../firebase/firebase'; // Ensure you are importing the initialized Firebase app
+
+const UNSUPPORTED_LANGUAGE_MESSAGE = 'This language is not supported yet. Please use Python 3 for now.';
 
 export default function DailyProblem() {
   // State management
-  const [language, setLanguage] = useState('92'); // Default to Python
+  const [language, setLanguage] = useState('python3');
   const [code, setCode] = useState('');
   const [stdin, setStdin] = useState('');
   const [output, setOutput] = useState('Output will appear here...');
@@ -93,42 +94,43 @@ export default function DailyProblem() {
     return () => window.removeEventListener('resize', handleWindowResize);
   }, []);
 
-  const formatSubmissionResult = (submission, testCaseNum) => {
-    const statusCode = submission.status.id;
-
-    let resultText = "";
-    if (statusCode === 3) {
-      resultText = "✅ Correct Answer";
-    } else if (statusCode === 4) {
-      resultText = "❌ Wrong Answer";
-    } else if (statusCode === 5) {
-      resultText = "⏰ Time Limit Exceeded";
-    } else if (statusCode === 6) {
-      resultText = "🔨 Compilation Error";
-    } else if (statusCode >= 7) {
-      resultText = "💥 Runtime Error";
+  const formatSubmissionResult = (verdict) => {
+    if (verdict === "AC") {
+      return "✅ Correct Answer";
+    } else if (verdict === "WA") {
+      return "❌ Wrong Answer";
+    } else if (verdict === "TLE") {
+      return "⏰ Time Limit Exceeded";
+    } else if (verdict === "MLE") {
+      return "💾 Memory Limit Exceeded";
+    } else if (verdict === "CE") {
+      return "🔨 Compilation Error";
     }
-
-    return resultText;
+    return "💥 Runtime Error";
   };
 
-  // Helper function to format submission result
-  const formatRunResult = (submission) => {
-    const statusCode = submission.status.id;
-
+  // Helper function to format the result of a run
+  const formatRunResult = (result) => {
     let resultText = "";
-    if (statusCode === 6) {
-      resultText = "🔨 Compilation Error\n\n" + atob(submission.compile_output);
-    } else if (statusCode >= 7) {
-      resultText = "💥 " + submission.status.description + "\n\nError:\n" + atob(submission.stderr);
+    if (result.verdict === "CE") {
+      resultText = "🔨 Compilation Error\n\n" + result.stderr;
+    } else if (result.verdict === "RE") {
+      resultText = "💥 Runtime Error\n\nError:\n" + result.stderr;
+    } else if (result.verdict === "TLE") {
+      resultText = "⏰ Time Limit Exceeded";
+    } else if (result.verdict === "MLE") {
+      resultText = "💾 Memory Limit Exceeded";
     } else {
-      resultText = "Output:\n" + atob(submission.stdout);
+      resultText = "Output:\n" + result.stdout;
+    }
+
+    if (result.truncated) {
+      resultText += "\n\n(Output was truncated.)";
     }
 
     // Add execution time and memory info
-    const executionTime = submission.time ? `${submission.time}s` : 'N/A';
-    const memoryUsed = submission.memory ? `${submission.memory}KB` : 'N/A';
-    resultText += `\n\nExecution Time: ${executionTime}`;
+    const memoryUsed = result.memoryKb ? `${result.memoryKb}KB` : 'N/A';
+    resultText += `\n\nExecution Time: ${result.timeMs}ms`;
     resultText += `\nMemory Used: ${memoryUsed}`;
 
     return resultText;
@@ -140,14 +142,18 @@ export default function DailyProblem() {
       setOutput('Please enter some code to run.');
       return;
     }
+    if (!SUPPORTED_LANGUAGES.includes(language)) {
+      setOutput(UNSUPPORTED_LANGUAGE_MESSAGE);
+      return;
+    }
 
     setIsRunning(true);
     setError(null);
     setOutput('Uploading and running...');
 
     try {
-      const submission = await uploadToJudge0(parseInt(language), code, stdin, null);
-      const resultText = formatRunResult(submission);
+      const result = await runCode(code, stdin);
+      const resultText = formatRunResult(result);
       setOutput(resultText);
     } catch (error) {
       console.error('Error running code:', error);
@@ -163,47 +169,47 @@ export default function DailyProblem() {
       setOutput('Please enter some code to submit.');
       return;
     }
+    if (!SUPPORTED_LANGUAGES.includes(language)) {
+      setOutput(UNSUPPORTED_LANGUAGE_MESSAGE);
+      return;
+    }
 
     setIsSubmitting(true);
     setError(null);
-    setOutput('Fetching test cases...');
+    setOutput('Submitting...');
 
     try {
-      // 1. Fetch test cases JSON from Firebase Storage using the Storage SDK
-      let testCases = [];
-      if (!dailyProblem?.testCasesStorageUrl) {
+      if (!dailyProblem?.testCasesUrl) {
         throw new Error('No test cases URL found for this problem.');
       }
-      // Extract path (after bucket name)
-      const storageUrl = dailyProblem.testCasesStorageUrl;
-      // E.g. from https://storage.googleapis.com/nnhs-programming-club-website.appspot.com/test-cases/123.json get 'test-cases/123.json'
-      const match = storageUrl.match(/googleapis.com\/[^/]+\/(.+)/);
-      const filePath = match ? match[1] : null;
-      if (!filePath) throw new Error('Could not parse test cases path from URL.');
-      const storage = getStorage(app);
-      const fileRef = ref(storage, filePath);
-      const url = await getDownloadURL(fileRef);
-      const res = await fetch(url);
-      if (!res.ok) throw new Error('Failed to fetch test cases JSON from storage.');
-      testCases = await res.json(); // [{in:..., out:...}, ...]
-      if (!Array.isArray(testCases) || testCases.length === 0) throw new Error('No test cases available.');
-
-      // 2. Run the submission for each test case in order
-      setOutput(`Running ${testCases.length} test cases...\n\n`)
-      let testsPassed = 0;
-      for (let i = 0; i < testCases.length; ++i) {
-        const t = testCases[i];
-        let submission;
-        try {
-          submission = await uploadToJudge0(parseInt(language), code, t.in, t.out);
-          if (submission.status.id == 3) { testsPassed++; }
-          setOutput(prev => prev + `Test Case #${i+1}: ${formatSubmissionResult(submission, t.out, false)}\n`);
-        } catch (err) {
-          setOutput(prev => prev + `Test Case #${i+1}: ⚠️ Server Error\n`);
-        }
+      if (/INPUT FORMAT \(file (\w+)\.in\):/i.test(dailyProblem.description)) {
+        throw new Error('Problems that read and write files are not supported yet.');
       }
 
-      setOutput(prev => prev + `Passed ${testsPassed} out of ${testCases.length} test cases.\n`)
+      // Each poll returns every finished case, so only print the new ones.
+      let shown = 0;
+      const showProgress = (progress) => {
+        if (!progress.cases) return;
+        if (shown === 0) {
+          setOutput(`Running ${progress.total} test cases...\n\n`);
+        }
+        const lines = progress.cases
+          .slice(shown)
+          .map(c => `Test Case #${c.testId}: ${formatSubmissionResult(c.verdict)}\n`)
+          .join('');
+        shown = progress.cases.length;
+        if (lines) {
+          setOutput(prev => prev + lines);
+        }
+      };
+
+      const result = await submitCode(code, dailyProblem.cpid, dailyProblem.testCasesUrl, showProgress);
+
+      let summary = `\nPassed ${result.passed} out of ${result.total} test cases.\n`;
+      if (result.firstFailure?.stderr) {
+        summary += `\nError on Test Case #${result.firstFailure.testId}:\n${result.firstFailure.stderr}`;
+      }
+      setOutput(prev => prev + summary);
 
       // TODO add submission stats to firebase
 
@@ -311,9 +317,9 @@ export default function DailyProblem() {
                     value={language}
                     onChange={(e) => setLanguage(e.target.value)}
                   >
-                    <option value="92">Python 3.11.2</option>
-                    <option value="54">C++ (GCC 9.2.0)</option>
-                    <option value="91">Java (JDK 17.0.6)</option>
+                    <option value="python3">Python 3</option>
+                    <option value="cpp">C++</option>
+                    <option value="java">Java</option>
                   </select>
                 </div>
                 
