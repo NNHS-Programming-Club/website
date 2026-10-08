@@ -1,0 +1,22 @@
+{
+  "name": "nnhs-judge",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Judge REST API for the NNHS Programming Club website",
+  "type": "module",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "start:api": "node src/api/server.ts",
+    "test": "node --test",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "fastify": "^5.12.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "typescript": "^7.0.2"
+  }
+}
