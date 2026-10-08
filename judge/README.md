@@ -74,3 +74,4 @@ Configured through environment variables:
 |---|---|---|
 | `PORT` | `8080` | Port the API listens on |
 | `HOST` | `127.0.0.1` | Address the API listens on |
+| `PYTHON_BIN` | `python3` | Python interpreter that runs the submitted code; set it to `python` on Windows |

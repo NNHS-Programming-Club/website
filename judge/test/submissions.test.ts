@@ -1,7 +1,11 @@
 import test from "node:test";
 import type { TestContext } from "node:test";
 import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
+import { setTimeout as sleep } from "node:timers/promises";
+import type { FastifyInstance } from "fastify";
 import { buildApp } from "../src/api/app.ts";
+import { config } from "../src/config.ts";
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 
@@ -12,6 +16,17 @@ function setup(t: TestContext) {
   const app = buildApp();
   t.after(() => app.close());
   return app;
+}
+
+// The Windows Store alias for python exists but exits non-zero.
+const hasPython = spawnSync(config.pythonBin, ["--version"]).status === 0;
+
+async function waitUntilFinished(app: FastifyInstance, id: string) {
+  for (;;) {
+    const view = (await app.inject({ method: "GET", url: `/submissions/${id}` })).json();
+    if (view.status === "done" || view.status === "error") return view;
+    await sleep(20);
+  }
 }
 
 function without(body: Record<string, unknown>, key: string) {
@@ -25,7 +40,7 @@ for (const [name, body] of [
   ["run with empty stdin", { ...run, stdin: "" }],
   ["submit", submit],
 ] as const) {
-  test(`POST /submissions accepts a valid ${name} and reports it as queued`, async (t) => {
+  test(`POST /submissions accepts a valid ${name}`, async (t) => {
     const app = setup(t);
 
     const created = await app.inject({ method: "POST", url: "/submissions", payload: body });
@@ -37,9 +52,44 @@ for (const [name, body] of [
     const fetched = await app.inject({ method: "GET", url: `/submissions/${id}` });
 
     assert.equal(fetched.statusCode, 200);
-    assert.deepEqual(fetched.json(), { id, mode: body.mode, status: "queued" });
+    const view = fetched.json();
+    assert.deepEqual(Object.keys(view), ["id", "mode", "status", "result"]);
+    assert.equal(view.id, id);
+    assert.equal(view.mode, body.mode);
+    assert.ok(["queued", "running", "done", "error"].includes(view.status));
+
+    await waitUntilFinished(app, id);
   });
 }
+
+test("a submit ends in error because it is not implemented yet", async (t) => {
+  const app = setup(t);
+
+  const created = await app.inject({ method: "POST", url: "/submissions", payload: submit });
+  const { id } = created.json();
+
+  assert.deepEqual(await waitUntilFinished(app, id), {
+    id,
+    mode: "submit",
+    status: "error",
+    result: null,
+  });
+});
+
+test("a run executes the code and returns its output", { skip: !hasPython }, async (t) => {
+  const app = setup(t);
+
+  const created = await app.inject({ method: "POST", url: "/submissions", payload: run });
+  const { id } = created.json();
+  const finished = await waitUntilFinished(app, id);
+
+  assert.equal(finished.status, "done");
+  assert.equal(finished.result.verdict, "OK");
+  // Python on Windows writes \r\n.
+  assert.equal(finished.result.stdout.replace("\r\n", "\n"), "hello\n");
+  assert.equal(finished.result.stderr, "");
+  assert.equal(finished.result.truncated, false);
+});
 
 const invalidBodies: [string, Record<string, unknown>][] = [
   ["missing mode", without(run, "mode")],
