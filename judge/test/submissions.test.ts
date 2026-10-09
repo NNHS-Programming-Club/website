@@ -9,16 +9,21 @@ import { setTimeout as sleep } from "node:timers/promises";
 import type { FastifyInstance } from "fastify";
 import { buildApp } from "../src/api/app.ts";
 import { config } from "../src/config.ts";
+import type { GetProblem } from "../src/api/problems.ts";
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 
 const run = { mode: "run", language: "python3", code: "print(input())", stdin: "hello\n" };
-const submit = {
-  mode: "submit",
-  language: "python3",
-  code: "print(1)",
-  cpid: 1234,
-  testCasesUrl: "https://usaco.org/current/data/prob1_bronze_dec20.zip",
+const submit = { mode: "submit", language: "python3", code: "print(1)", cpid: 1234 };
+
+const FILE_IO_CPID = 5678;
+const getProblem: GetProblem = async (cpid) => {
+  if (cpid !== submit.cpid && cpid !== FILE_IO_CPID) return undefined;
+  return {
+    cpid,
+    testCasesUrl: "https://usaco.org/current/data/prob1_bronze_dec20.zip",
+    isFileIo: cpid === FILE_IO_CPID,
+  };
 };
 
 // The submit above finds its case in the cache, so no test downloads anything.
@@ -29,7 +34,7 @@ await writeFile(join(config.cacheDir, "1234", "1.out"), "1\n");
 test.after(() => rm(config.cacheDir, { recursive: true, force: true }));
 
 function setup(t: TestContext) {
-  const app = buildApp();
+  const app = buildApp({ getProblem });
   t.after(() => app.close());
   return app;
 }
@@ -124,11 +129,6 @@ const invalidBodies:[string, Record<string, unknown>][] = [
   ["submit without cpid", without(submit, "cpid")],
   ["fractional cpid", { ...submit, cpid: 1.5 }],
   ["string cpid", { ...submit, cpid: "1234" }],
-  ["submit without testCasesUrl", without(submit, "testCasesUrl")],
-  ["testCasesUrl on another host", { ...submit, testCasesUrl: "https://example.com/a.zip" }],
-  ["testCasesUrl on a lookalike host", { ...submit, testCasesUrl: "https://usaco.org.evil.com/a.zip" }],
-  ["http testCasesUrl", { ...submit, testCasesUrl: "http://usaco.org/a.zip" }],
-  ["malformed testCasesUrl", { ...submit, testCasesUrl: "not a url" }],
 ];
 
 for (const [name, body] of invalidBodies) {
@@ -169,6 +169,28 @@ test("POST /submissions rejects a body over the size limit", async (t) => {
 
   assert.equal(res.statusCode, 413);
   assert.equal(res.json().error.code, "payload_too_large");
+});
+
+test("POST /submissions returns 404 for an unknown problem", async (t) => {
+  const app = setup(t);
+
+  const res = await app.inject({ method: "POST", url: "/submissions", payload: { ...submit, cpid: 1 } });
+
+  assert.equal(res.statusCode, 404);
+  assert.equal(res.json().error.code, "not_found");
+});
+
+test("POST /submissions returns 422 for a problem that reads and writes files", async (t) => {
+  const app = setup(t);
+
+  const res = await app.inject({
+    method: "POST",
+    url: "/submissions",
+    payload: { ...submit, cpid: FILE_IO_CPID },
+  });
+
+  assert.equal(res.statusCode, 422);
+  assert.equal(res.json().error.code, "unsupported_problem");
 });
 
 test("GET /submissions/:id returns 404 for an unknown id", async (t) => {

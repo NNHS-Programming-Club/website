@@ -52,11 +52,11 @@ export async function runCode(code, stdin) {
 }
 
 // onProgress gets the result so far ({ total, cases }) on every poll.
-export async function submitCode(code, cpid, testCasesUrl, onProgress) {
+export async function submitCode(code, cpid, onProgress) {
   const { id } = await request('/submissions', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ mode: 'submit', language: 'python3', code, cpid, testCasesUrl })
+    body: JSON.stringify({ mode: 'submit', language: 'python3', code, cpid })
   });
 
   return waitForResult(id, onProgress);

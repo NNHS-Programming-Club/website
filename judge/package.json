@@ -8,14 +8,15 @@
     "node": ">=22.18"
   },
   "scripts": {
-    "start:api": "node src/api/server.ts",
-    "test": "node --test",
+    "start:api": "node --env-file-if-exists=.env src/api/server.ts",
+    "test": "node --env-file-if-exists=.env --test",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@fastify/cors": "^11.3.1",
     "adm-zip": "^0.6.1",
-    "fastify": "^5.12.5"
+    "fastify": "^5.12.5",
+    "firebase-admin": "^14.5.0"
   },
   "devDependencies": {
     "@types/adm-zip": "^0.5.8",

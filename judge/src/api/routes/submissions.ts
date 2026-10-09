@@ -1,5 +1,6 @@
 import type { FastifyInstance } from "fastify";
 import { sendError } from "../errors.ts";
+import type { GetProblem } from "../problems.ts";
 import { create, get } from "../store.ts";
 import type { Language } from "../store.ts";
 
@@ -17,7 +18,6 @@ const bodySchema = {
     code: { type: "string", minLength: 1, maxLength: MAX_CODE_BYTES },
     stdin: { type: "string", maxLength: MAX_STDIN_BYTES },
     cpid: { type: "integer" },
-    testCasesUrl: { type: "string", maxLength: 2048 },
   },
   allOf: [
     {
@@ -26,7 +26,7 @@ const bodySchema = {
     },
     {
       if: { properties: { mode: { const: "submit" } } },
-      then: { required: ["cpid", "testCasesUrl"] },
+      then: { required: ["cpid"] },
     },
   ],
 };
@@ -37,25 +37,14 @@ type SubmissionBody = {
   code: string;
   stdin?: string;
   cpid?: number;
-  testCasesUrl?: string;
 };
 
-// Temporary: the client supplies the test case URL until the judge looks problems up itself.
-function isUsacoUrl(value: string) {
-  try {
-    const url = new URL(value);
-    return url.protocol === "https:" && /^(www\.)?usaco\.org$/.test(url.hostname);
-  } catch {
-    return false;
-  }
-}
-
-export async function submissionsRoutes(app: FastifyInstance) {
+export async function submissionsRoutes(app: FastifyInstance, opts: { getProblem: GetProblem }) {
   app.post<{ Body: SubmissionBody }>(
     "/submissions",
     { schema: { body: bodySchema }, bodyLimit: BODY_LIMIT },
     async (request, reply) => {
-      const { mode, language, code, stdin = "", cpid = 0, testCasesUrl = "" } = request.body;
+      const { mode, language, code, stdin = "", cpid = 0 } = request.body;
 
       // maxLength counts characters, not bytes.
       if (Buffer.byteLength(code) > MAX_CODE_BYTES) {
@@ -65,15 +54,25 @@ export async function submissionsRoutes(app: FastifyInstance) {
         return sendError(reply, 400, "invalid_request", "stdin must not be larger than 1MB");
       }
 
-      if (mode === "submit" && !isUsacoUrl(testCasesUrl)) {
-        return sendError(reply, 400, "invalid_request", "testCasesUrl must be an https://usaco.org URL");
+      if (mode === "run") {
+        const id = await create({ mode, language, code, stdin });
+        return reply.code(202).send({ id });
       }
 
-      const id = await create(
-        mode === "run"
-          ? { mode, language, code, stdin }
-          : { mode, language, code, cpid, testCasesUrl },
-      );
+      const problem = await opts.getProblem(cpid);
+      if (!problem) {
+        return sendError(reply, 404, "not_found", "Problem not found");
+      }
+      if (problem.isFileIo) {
+        return sendError(
+          reply,
+          422,
+          "unsupported_problem",
+          "Problems that read and write files are not supported",
+        );
+      }
+
+      const id = await create({ mode, language, code, cpid, testCasesUrl: problem.testCasesUrl });
       return reply.code(202).send({ id });
     },
   );

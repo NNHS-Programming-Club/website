@@ -179,13 +179,6 @@ export default function DailyProblem() {
     setOutput('Submitting...');
 
     try {
-      if (!dailyProblem?.testCasesUrl) {
-        throw new Error('No test cases URL found for this problem.');
-      }
-      if (/INPUT FORMAT \(file (\w+)\.in\):/i.test(dailyProblem.description)) {
-        throw new Error('Problems that read and write files are not supported yet.');
-      }
-
       // Each poll returns every finished case, so only print the new ones.
       let shown = 0;
       const showProgress = (progress) => {
@@ -203,7 +196,7 @@ export default function DailyProblem() {
         }
       };
 
-      const result = await submitCode(code, dailyProblem.cpid, dailyProblem.testCasesUrl, showProgress);
+      const result = await submitCode(code, dailyProblem.cpid, showProgress);
 
       let summary = `\nPassed ${result.passed} out of ${result.total} test cases.\n`;
       if (result.firstFailure?.stderr) {
