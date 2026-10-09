@@ -61,10 +61,17 @@ async function download(url: string, dir: string) {
   if (!response.ok) {
     throw new Error(`downloading ${url} failed with status ${response.status}`);
   }
-  if (Number(response.headers.get("content-length")) > MAX_ZIP_BYTES) {
-    throw new Error(`${url} is larger than the test case size limit`);
+  // Counted while reading, because content-length can be missing.
+  const chunks: Uint8Array[] = [];
+  let size = 0;
+  for await (const chunk of response.body ?? []) {
+    size += chunk.length;
+    if (size > MAX_ZIP_BYTES) {
+      throw new Error(`${url} is larger than the test case size limit`);
+    }
+    chunks.push(chunk);
   }
-  const zip = new AdmZip(Buffer.from(await response.arrayBuffer()));
+  const zip = new AdmZip(Buffer.concat(chunks));
 
   // Extracted next to the final directory, then renamed, so a crash leaves no half-filled cache.
   const tmp = `${dir}.tmp-${randomUUID()}`;
@@ -74,6 +81,10 @@ async function download(url: string, dir: string) {
       const name = basename(entry.entryName);
       if (entry.isDirectory || !CASE_FILE.test(name)) continue;
       await writeFile(join(tmp, name), entry.getData());
+    }
+    // An empty directory would be cached forever.
+    if ((await readCases(tmp))?.length === 0) {
+      throw new Error(`${url} contains no test cases`);
     }
     await rename(tmp, dir);
   } catch (err) {
