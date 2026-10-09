@@ -19,6 +19,7 @@ export type SubmissionView = {
 };
 
 type Stored = {
+  uid: string;
   submission: NewSubmission;
   status: Status;
   result: SubmissionView["result"];
@@ -30,17 +31,17 @@ const submissions = new Map<string, Stored>();
 let tail: Promise<void> = Promise.resolve();
 
 // Async so a real queue can replace the Map.
-export async function create(submission: NewSubmission): Promise<string> {
+export async function create(uid: string, submission: NewSubmission): Promise<string> {
   const id = randomUUID();
-  const stored: Stored = { submission, status: "queued", result: null };
+  const stored: Stored = { uid, submission, status: "queued", result: null };
   submissions.set(id, stored);
   tail = tail.then(() => execute(id, stored));
   return id;
 }
 
-export async function get(id: string): Promise<SubmissionView | undefined> {
+export async function get(id: string, uid: string): Promise<SubmissionView | undefined> {
   const stored = submissions.get(id);
-  if (!stored) return undefined;
+  if (!stored || stored.uid !== uid) return undefined;
   return { id, mode: stored.submission.mode, status: stored.status, result: stored.result };
 }
 

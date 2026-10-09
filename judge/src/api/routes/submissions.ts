@@ -1,4 +1,6 @@
 import type { FastifyInstance } from "fastify";
+import { requireAuth } from "../auth.ts";
+import type { VerifyToken } from "../auth.ts";
 import { sendError } from "../errors.ts";
 import type { GetProblem } from "../problems.ts";
 import { create, get } from "../store.ts";
@@ -39,7 +41,12 @@ type SubmissionBody = {
   cpid?: number;
 };
 
-export async function submissionsRoutes(app: FastifyInstance, opts: { getProblem: GetProblem }) {
+export async function submissionsRoutes(
+  app: FastifyInstance,
+  opts: { getProblem: GetProblem; verifyToken: VerifyToken },
+) {
+  app.addHook("onRequest", requireAuth(opts.verifyToken));
+
   app.post<{ Body: SubmissionBody }>(
     "/submissions",
     { schema: { body: bodySchema }, bodyLimit: BODY_LIMIT },
@@ -55,7 +62,7 @@ export async function submissionsRoutes(app: FastifyInstance, opts: { getProblem
       }
 
       if (mode === "run") {
-        const id = await create({ mode, language, code, stdin });
+        const id = await create(request.uid, { mode, language, code, stdin });
         return reply.code(202).send({ id });
       }
 
@@ -72,13 +79,19 @@ export async function submissionsRoutes(app: FastifyInstance, opts: { getProblem
         );
       }
 
-      const id = await create({ mode, language, code, cpid, testCasesUrl: problem.testCasesUrl });
+      const id = await create(request.uid, {
+        mode,
+        language,
+        code,
+        cpid,
+        testCasesUrl: problem.testCasesUrl,
+      });
       return reply.code(202).send({ id });
     },
   );
 
   app.get<{ Params: { id: string } }>("/submissions/:id", async (request, reply) => {
-    const submission = await get(request.params.id);
+    const submission = await get(request.params.id, request.uid);
     if (!submission) {
       return sendError(reply, 404, "not_found", "Submission not found");
     }
