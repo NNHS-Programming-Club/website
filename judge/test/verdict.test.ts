@@ -18,6 +18,7 @@ const cases: [string, Partial<RunResult>, string][] = [
   ["a non-zero exit code", { exitCode: 1 }, "RE"],
   ["a signal", { status: "signaled", exitCode: null, signal: "SIGSEGV" }, "RE"],
   ["a timeout", { status: "timeout", exitCode: null, signal: "SIGKILL" }, "TLE"],
+  ["an out-of-memory kill", { status: "memory_limit", exitCode: null, signal: "SIGKILL" }, "MLE"],
   ["too much output", { status: "output_limit", exitCode: null, signal: "SIGKILL" }, "RE"],
 ];
 

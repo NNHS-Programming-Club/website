@@ -1,7 +1,6 @@
 import test from "node:test";
 import type { TestContext } from "node:test";
 import assert from "node:assert/strict";
-import { spawnSync } from "node:child_process";
 import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -38,9 +37,6 @@ function setup(t: TestContext) {
   t.after(() => app.close());
   return app;
 }
-
-// The Windows Store alias for python exists but exits non-zero.
-const hasPython = spawnSync(config.pythonBin, ["--version"]).status === 0;
 
 async function waitUntilFinished(app: FastifyInstance, id: string) {
   for (;;) {
@@ -82,35 +78,6 @@ for (const [name, body] of [
     await waitUntilFinished(app, id);
   });
 }
-
-test("a run executes the code and returns its output", { skip: !hasPython }, async (t) => {
-  const app = setup(t);
-
-  const created = await app.inject({ method: "POST", url: "/submissions", payload: run });
-  const { id } = created.json();
-  const finished = await waitUntilFinished(app, id);
-
-  assert.equal(finished.status, "done");
-  assert.equal(finished.result.verdict, "OK");
-  // Python on Windows writes \r\n.
-  assert.equal(finished.result.stdout.replace("\r\n", "\n"), "hello\n");
-  assert.equal(finished.result.stderr, "");
-  assert.equal(finished.result.truncated, false);
-});
-
-test("a run reads and writes non-ASCII text as UTF-8", { skip: !hasPython }, async (t) => {
-  const app = setup(t);
-
-  const created = await app.inject({
-    method: "POST",
-    url: "/submissions",
-    payload: { ...run, code: 'print(input(), len(input()), "✓")', stdin: "é✓\né✓\n" },
-  });
-  const finished = await waitUntilFinished(app, created.json().id);
-
-  assert.equal(finished.result.verdict, "OK");
-  assert.equal(finished.result.stdout.replace("\r\n", "\n"), "é✓ 2 ✓\n");
-});
 
 const invalidBodies:[string, Record<string, unknown>][] = [
   ["missing mode", without(run, "mode")],

@@ -8,7 +8,8 @@ export const config = {
     .map((origin) => origin.trim())
     .filter(Boolean),
   cacheDir: process.env.CACHE_DIR || join(import.meta.dirname, "..", "cache"),
-  pythonBin: process.env.PYTHON_BIN || "python3",
+  // An absolute path: isolate does not search PATH.
+  pythonBin: "/usr/bin/python3",
   limits: {
     cpuSeconds: 4,
     wallSeconds: 8,

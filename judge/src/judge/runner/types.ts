@@ -13,7 +13,7 @@ export type RunRequest = {
   limits: RunLimits;
 };
 
-export type RunStatus = "exited" | "signaled" | "timeout" | "output_limit";
+export type RunStatus = "exited" | "signaled" | "timeout" | "memory_limit" | "output_limit";
 
 export type RunResult = {
   status: RunStatus;

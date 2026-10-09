@@ -14,6 +14,8 @@ cp .env.example .env
 
 Submit mode needs a Firebase service account key at `judge/serviceAccountKey.json`.
 
+Needs Linux (WSL 2 on Windows) with isolate: see [setup-isolate.md](setup-isolate.md).
+
 ## Commands
 
 ```bash
@@ -36,7 +38,8 @@ npm run typecheck    # types are not checked when the code runs
 ```
 
 - `language` must be `python3`; `code` is limited to 64KB and `stdin` to 1MB.
-- `status` is `queued`, `running`, `done`, or `error` (the judge itself failed). Submissions run one at a time, unsandboxed.
+- `status` is `queued`, `running`, `done`, or `error` (the judge itself failed). Submissions run one at a time.
+- Verdicts: `OK`, `AC`, `WA`, `TLE`, `MLE`, `RE`. Limits: 4s CPU, 128MB.
 - Run result: `{ verdict, stdout, stderr, timeMs, memoryKb, truncated }`
 - Submit result: `{ verdict, total, passed, cases, firstFailure }`; while running, `{ total, cases }` so far.
 - A submit looks the problem up by `cpid` in Firestore: `404` if it is unknown, `422` if it reads and writes files. Its test cases are downloaded from usaco.org once and cached.
@@ -60,4 +63,3 @@ Environment variables, loaded from `.env` by `npm run start:api` and `npm test`:
 | `CORS_ORIGINS` | `https://nnhsprogramming.club,http://localhost:3000` | Allowed origins, comma-separated |
 | `CACHE_DIR` | `judge/cache` | Test case cache |
 | `GOOGLE_APPLICATION_CREDENTIALS` | none | Path to the Firebase service account key |
-| `PYTHON_BIN` | `python3` | Python that runs submitted code; `python` on Windows |

@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import { config } from "../config.ts";
 import type { NewSubmission } from "../api/store.ts";
 import { outputsMatch } from "./compare.ts";
-import { runProgram } from "./runner/process.ts";
+import { runIsolated } from "./runner/isolate.ts";
 import type { Runner } from "./runner/types.ts";
 import { getTestCases } from "./testCases.ts";
 import { verdictOf } from "./verdict.ts";
@@ -42,7 +42,7 @@ export type JudgeResult = RunModeResult | SubmitModeResult;
 export async function judgeSubmission(
   submission: NewSubmission,
   onProgress: (progress: SubmitProgress) => void,
-  runner: Runner = runProgram,
+  runner: Runner = runIsolated,
 ): Promise<JudgeResult> {
   if (submission.mode === "submit") {
     return judgeSubmit(submission, onProgress, runner);
