@@ -1,5 +1,3 @@
-const GET_SUBMISSION_DELAY = 500;
-
 const JUDGE_API_URL = 'http://localhost:8080';
 const JUDGE_POLL_DELAY = 500;
 
@@ -12,4 +10,4 @@ const monacoLanguageMap = {
 // Languages the judge can run; the others are only listed in the selector.
 const SUPPORTED_LANGUAGES = ['python3'];
 
-export { GET_SUBMISSION_DELAY, JUDGE_API_URL, JUDGE_POLL_DELAY, monacoLanguageMap, SUPPORTED_LANGUAGES };
+export {JUDGE_API_URL, JUDGE_POLL_DELAY, monacoLanguageMap, SUPPORTED_LANGUAGES };
