@@ -1,8 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { judgeSubmission } from "../judge/judge.ts";
 import type { JudgeResult, SubmitProgress } from "../judge/judge.ts";
-
-export type Language = "python3";
+import type { Language } from "../judge/languages.ts";
 
 export type NewSubmission =
   | { mode: "run"; language: Language; code: string; stdin: string }

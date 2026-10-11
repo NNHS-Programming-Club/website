@@ -34,14 +34,15 @@ npm run typecheck    # types are not checked when the code runs
 
 ```json
 { "mode": "run", "language": "python3", "code": "print(input())", "stdin": "hello\n" }
-{ "mode": "submit", "language": "python3", "code": "...", "cpid": 1234 }
+{ "mode": "submit", "language": "cpp", "code": "...", "cpid": 1234 }
 ```
 
-- `language` must be `python3`; `code` is limited to 64KB and `stdin` to 1MB.
+- `language` is `python3` or `cpp` (compiled with `g++ -O2 -std=c++17`); `code` is limited to 64KB and `stdin` to 1MB.
 - `status` is `queued`, `running`, `done`, or `error` (the judge itself failed). Submissions run one at a time.
-- Verdicts: `OK`, `AC`, `WA`, `TLE`, `MLE`, `RE`. Limits: 4s CPU, 128MB.
+- Verdicts: `OK`, `AC`, `WA`, `TLE`, `MLE`, `RE`, `CE`. Limits: 4s CPU, 128MB.
 - Run result: `{ verdict, stdout, stderr, timeMs, memoryKb, truncated }`
 - Submit result: `{ verdict, total, passed, cases, firstFailure }`; while running, `{ total, cases }` so far.
+- When the code does not compile, the result in both modes is `{ verdict: "CE", compileOutput }`.
 - A submit looks the problem up by `cpid` in Firestore: `404` if it is unknown, `422` if it reads and writes files. Its test cases are downloaded from usaco.org once and cached.
 - Errors are `{ "error": { "code", "message" } }`.
 

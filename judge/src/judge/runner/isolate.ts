@@ -13,7 +13,7 @@ const STDIN = ".stdin";
 const STDOUT = ".stdout";
 const STDERR = ".stderr";
 
-export const runIsolated: Runner = async ({ files, argv, stdin, limits }) => {
+export const runIsolated: Runner = async ({ files, argv, stdin, limits, collect }) => {
   const metaDir = await mkdtemp(join(tmpdir(), "judge-meta-"));
   try {
     // A crashed earlier run may have left the box behind, and --init refuses to reuse it.
@@ -23,7 +23,8 @@ export const runIsolated: Runner = async ({ files, argv, stdin, limits }) => {
     const box = join(init.stdout.trim(), "box");
 
     for (const [name, content] of Object.entries(files)) {
-      await writeFile(join(box, name), content);
+      // 0o755 sets the execute bit; without it a compiled binary fails with "Permission denied".
+      await writeFile(join(box, name), content, { mode: 0o755 });
     }
     await writeFile(join(box, STDIN), stdin);
 
@@ -38,6 +39,8 @@ export const runIsolated: Runner = async ({ files, argv, stdin, limits }) => {
       `--stdin=${STDIN}`,
       `--stdout=${STDOUT}`,
       `--stderr=${STDERR}`,
+      // g++ needs PATH to find its assembler and linker.
+      "--env=PATH=/usr/bin:/bin",
       "--run",
       "--",
       ...argv,
@@ -52,7 +55,12 @@ export const runIsolated: Runner = async ({ files, argv, stdin, limits }) => {
     const maxBytes = limits.outputKb * 1024;
     const outputLimited = stdout.length >= maxBytes || stderr.length >= maxBytes;
 
-    return toRunResult(meta, stdout.toString(), stderr.toString(), outputLimited);
+    const result = toRunResult(meta, stdout.toString(), stderr.toString(), outputLimited);
+    if (collect) {
+      const collected = await readFile(join(box, collect)).catch(() => undefined);
+      if (collected) result.collected = collected;
+    }
+    return result;
   } finally {
     await isolate(["--cleanup"]).catch(() => {});
     await rm(metaDir, { recursive: true, force: true });

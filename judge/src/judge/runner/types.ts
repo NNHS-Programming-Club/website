@@ -7,10 +7,12 @@ export type RunLimits = {
 
 export type RunRequest = {
   // File name to content, written into the working directory before the program starts.
-  files: Record<string, string>;
+  files: Record<string, string | Buffer>;
   argv: string[];
   stdin: string;
   limits: RunLimits;
+  // Read back into `collected`.
+  collect?: string;
 };
 
 export type RunStatus = "exited" | "signaled" | "timeout" | "memory_limit" | "output_limit";
@@ -23,6 +25,7 @@ export type RunResult = {
   memoryKb: number;
   stdout: string;
   stderr: string;
+  collected?: Buffer;
 };
 
 export type Runner = (request: RunRequest) => Promise<RunResult>;

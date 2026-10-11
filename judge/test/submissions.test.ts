@@ -65,6 +65,7 @@ function without(body: Record<string, unknown>, key: string) {
 for (const [name, body] of [
   ["run", run],
   ["run with empty stdin", { ...run, stdin: "" }],
+  ["cpp run", { ...run, language: "cpp", code: "int main() {}" }],
   ["submit", submit],
 ] as const) {
   test(`POST /submissions accepts a valid ${name}`, async (t) => {
@@ -98,7 +99,7 @@ const invalidBodies:[string, Record<string, unknown>][] = [
   ["missing mode", without(run, "mode")],
   ["unknown mode", { ...run, mode: "debug" }],
   ["missing language", without(run, "language")],
-  ["unsupported language", { ...run, language: "cpp" }],
+  ["unsupported language", { ...run, language: "java" }],
   ["missing code", without(run, "code")],
   ["empty code", { ...run, code: "" }],
   ["non-string code", { ...run, code: 1 }],

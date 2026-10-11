@@ -10,10 +10,18 @@ export const config = {
   cacheDir: process.env.CACHE_DIR || join(import.meta.dirname, "..", "cache"),
   // An absolute path: isolate does not search PATH.
   pythonBin: "/usr/bin/python3",
+  gxxBin: "/usr/bin/g++",
   limits: {
     cpuSeconds: 4,
     wallSeconds: 8,
     memoryKb: 131072,
     outputKb: 1024,
+  },
+  // outputKb also caps the binary size.
+  compileLimits: {
+    cpuSeconds: 10,
+    wallSeconds: 20,
+    memoryKb: 524288,
+    outputKb: 65536,
   },
 };

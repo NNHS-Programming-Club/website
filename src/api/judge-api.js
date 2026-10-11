@@ -41,22 +41,22 @@ async function waitForResult(id, onProgress) {
   }
 }
 
-export async function runCode(code, stdin) {
+export async function runCode(code, stdin, language) {
   const { id } = await request('/submissions', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ mode: 'run', language: 'python3', code, stdin })
+    body: JSON.stringify({ mode: 'run', language, code, stdin })
   });
 
   return waitForResult(id);
 }
 
 // onProgress gets the result so far ({ total, cases }) on every poll.
-export async function submitCode(code, cpid, onProgress) {
+export async function submitCode(code, cpid, language, onProgress) {
   const { id } = await request('/submissions', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ mode: 'submit', language: 'python3', code, cpid })
+    body: JSON.stringify({ mode: 'submit', language, code, cpid })
   });
 
   return waitForResult(id, onProgress);

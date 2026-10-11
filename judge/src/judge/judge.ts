@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import { config } from "../config.ts";
 import type { NewSubmission } from "../api/store.ts";
 import { outputsMatch } from "./compare.ts";
+import { languages } from "./languages.ts";
 import { runIsolated } from "./runner/isolate.ts";
 import type { Runner } from "./runner/types.ts";
 import { getTestCases } from "./testCases.ts";
@@ -37,20 +38,27 @@ export type SubmitModeResult = SubmitProgress & {
   firstFailure: { testId: number; stderr: string } | null;
 };
 
-export type JudgeResult = RunModeResult | SubmitModeResult;
+export type CompileErrorResult = { verdict: "CE"; compileOutput: string };
+
+export type JudgeResult = RunModeResult | SubmitModeResult | CompileErrorResult;
 
 export async function judgeSubmission(
   submission: NewSubmission,
   onProgress: (progress: SubmitProgress) => void,
   runner: Runner = runIsolated,
 ): Promise<JudgeResult> {
+  const prepared = await prepare(submission, runner);
+  if (!prepared.files) {
+    return { verdict: "CE", compileOutput: prepared.compileOutput };
+  }
+
   if (submission.mode === "submit") {
-    return judgeSubmit(submission, onProgress, runner);
+    return judgeSubmit(submission, prepared.files, onProgress, runner);
   }
 
   const result = await runner({
-    files: { "solution.py": submission.code },
-    argv: [config.pythonBin, "solution.py"],
+    files: prepared.files,
+    argv: languages[submission.language].run,
     stdin: submission.stdin,
     limits: config.limits,
   });
@@ -67,8 +75,32 @@ export async function judgeSubmission(
   };
 }
 
+type Files = Record<string, string | Buffer>;
+
+async function prepare(
+  submission: NewSubmission,
+  runner: Runner,
+): Promise<{ files: Files } | { files?: undefined; compileOutput: string }> {
+  const { source, compile } = languages[submission.language];
+  const files: Files = { [source]: submission.code };
+  if (!compile) return { files };
+
+  const result = await runner({
+    files,
+    argv: compile.argv,
+    stdin: "",
+    limits: config.compileLimits,
+    collect: compile.output,
+  });
+  if (verdictOf(result) !== "OK" || !result.collected) {
+    return { compileOutput: truncate(result.stderr, MAX_RESULT_OUTPUT_BYTES).text };
+  }
+  return { files: { [compile.output]: result.collected } };
+}
+
 async function judgeSubmit(
   submission: Extract<NewSubmission, { mode: "submit" }>,
+  files: Files,
   onProgress: (progress: SubmitProgress) => void,
   runner: Runner,
 ): Promise<SubmitModeResult> {
@@ -80,8 +112,8 @@ async function judgeSubmit(
   // A failed case does not stop the rest from running.
   for (const testCase of testCases) {
     const result = await runner({
-      files: { "solution.py": submission.code },
-      argv: [config.pythonBin, "solution.py"],
+      files,
+      argv: languages[submission.language].run,
       stdin: await readFile(testCase.inPath, "utf8"),
       limits: config.limits,
     });

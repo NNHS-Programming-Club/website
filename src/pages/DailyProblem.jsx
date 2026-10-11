@@ -8,7 +8,7 @@ import { getDailyProblem } from '../firebase/auth';
 import { useAuth } from '../contexts/authContext';
 import { useNavigate } from 'react-router-dom';
 
-const UNSUPPORTED_LANGUAGE_MESSAGE = 'This language is not supported yet. Please use Python 3 for now.';
+const UNSUPPORTED_LANGUAGE_MESSAGE = 'This language is not supported yet. Please use Python 3 or C++ for now.';
 
 export default function DailyProblem() {
   // State management
@@ -111,10 +111,12 @@ export default function DailyProblem() {
 
   // Helper function to format the result of a run
   const formatRunResult = (result) => {
-    let resultText = "";
     if (result.verdict === "CE") {
-      resultText = "🔨 Compilation Error\n\n" + result.stderr;
-    } else if (result.verdict === "RE") {
+      return "🔨 Compilation Error\n\n" + result.compileOutput;
+    }
+
+    let resultText = "";
+    if (result.verdict === "RE") {
       resultText = "💥 Runtime Error\n\nError:\n" + result.stderr;
     } else if (result.verdict === "TLE") {
       resultText = "⏰ Time Limit Exceeded";
@@ -152,7 +154,7 @@ export default function DailyProblem() {
     setOutput('Uploading and running...');
 
     try {
-      const result = await runCode(code, stdin);
+      const result = await runCode(code, stdin, language);
       const resultText = formatRunResult(result);
       setOutput(resultText);
     } catch (error) {
@@ -196,13 +198,17 @@ export default function DailyProblem() {
         }
       };
 
-      const result = await submitCode(code, dailyProblem.cpid, showProgress);
+      const result = await submitCode(code, dailyProblem.cpid, language, showProgress);
 
-      let summary = `\nPassed ${result.passed} out of ${result.total} test cases.\n`;
-      if (result.firstFailure?.stderr) {
-        summary += `\nError on Test Case #${result.firstFailure.testId}:\n${result.firstFailure.stderr}`;
+      if (result.verdict === 'CE') {
+        setOutput(formatSubmissionResult('CE') + '\n\n' + result.compileOutput);
+      } else {
+        let summary = `\nPassed ${result.passed} out of ${result.total} test cases.\n`;
+        if (result.firstFailure?.stderr) {
+          summary += `\nError on Test Case #${result.firstFailure.testId}:\n${result.firstFailure.stderr}`;
+        }
+        setOutput(prev => prev + summary);
       }
-      setOutput(prev => prev + summary);
 
       // TODO add submission stats to firebase
 

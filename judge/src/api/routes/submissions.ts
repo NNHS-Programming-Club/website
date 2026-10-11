@@ -3,8 +3,9 @@ import { requireAuth } from "../auth.ts";
 import type { VerifyToken } from "../auth.ts";
 import { sendError } from "../errors.ts";
 import type { GetProblem } from "../problems.ts";
+import { languages } from "../../judge/languages.ts";
+import type { Language } from "../../judge/languages.ts";
 import { create, get } from "../store.ts";
-import type { Language } from "../store.ts";
 
 const MAX_CODE_BYTES = 64 * 1024;
 const MAX_STDIN_BYTES = 1024 * 1024;
@@ -16,7 +17,7 @@ const bodySchema = {
   required: ["mode", "language", "code"],
   properties: {
     mode: { enum: ["run", "submit"] },
-    language: { enum: ["python3"] },
+    language: { enum: Object.keys(languages) },
     code: { type: "string", minLength: 1, maxLength: MAX_CODE_BYTES },
     stdin: { type: "string", maxLength: MAX_STDIN_BYTES },
     cpid: { type: "integer" },
