@@ -1,6 +1,8 @@
 import { readFile } from "node:fs/promises";
 import { config } from "../config.ts";
 import type { NewSubmission } from "../api/store.ts";
+import { compile } from "./compile.ts";
+import type { Files } from "./compile.ts";
 import { outputsMatch } from "./compare.ts";
 import { languages } from "./languages.ts";
 import { runIsolated } from "./runner/isolate.ts";
@@ -47,17 +49,20 @@ export async function judgeSubmission(
   onProgress: (progress: SubmitProgress) => void,
   runner: Runner = runIsolated,
 ): Promise<JudgeResult> {
-  const prepared = await prepare(submission, runner);
-  if (!prepared.files) {
-    return { verdict: "CE", compileOutput: prepared.compileOutput };
+  const compiled = await compile(submission.language, submission.code, runner);
+  if (!compiled.ok) {
+    return {
+      verdict: "CE",
+      compileOutput: truncate(compiled.compileOutput, MAX_RESULT_OUTPUT_BYTES).text,
+    };
   }
 
   if (submission.mode === "submit") {
-    return judgeSubmit(submission, prepared.files, onProgress, runner);
+    return judgeSubmit(submission, compiled.files, onProgress, runner);
   }
 
   const result = await runner({
-    files: prepared.files,
+    files: compiled.files,
     argv: languages[submission.language].run,
     stdin: submission.stdin,
     limits: config.limits,
@@ -73,29 +78,6 @@ export async function judgeSubmission(
     memoryKb: result.memoryKb,
     truncated: stdout.cut || stderr.cut || result.status === "output_limit",
   };
-}
-
-type Files = Record<string, string | Buffer>;
-
-async function prepare(
-  submission: NewSubmission,
-  runner: Runner,
-): Promise<{ files: Files } | { files?: undefined; compileOutput: string }> {
-  const { source, compile } = languages[submission.language];
-  const files: Files = { [source]: submission.code };
-  if (!compile) return { files };
-
-  const result = await runner({
-    files,
-    argv: compile.argv,
-    stdin: "",
-    limits: config.compileLimits,
-    collect: compile.output,
-  });
-  if (verdictOf(result) !== "OK" || !result.collected) {
-    return { compileOutput: truncate(result.stderr, MAX_RESULT_OUTPUT_BYTES).text };
-  }
-  return { files: { [compile.output]: result.collected } };
 }
 
 async function judgeSubmit(
