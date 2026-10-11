@@ -1,10 +1,9 @@
 import { readFile } from "node:fs/promises";
-import { config } from "../config.ts";
 import type { NewSubmission } from "../api/store.ts";
 import { compile } from "./compile.ts";
 import type { Files } from "./compile.ts";
 import { outputsMatch } from "./compare.ts";
-import { languages } from "./languages.ts";
+import { runLimits } from "./languages.ts";
 import { runIsolated } from "./runner/isolate.ts";
 import type { Runner } from "./runner/types.ts";
 import { getTestCases } from "./testCases.ts";
@@ -58,14 +57,14 @@ export async function judgeSubmission(
   }
 
   if (submission.mode === "submit") {
-    return judgeSubmit(submission, compiled.files, onProgress, runner);
+    return judgeSubmit(submission, compiled.files, compiled.run, onProgress, runner);
   }
 
   const result = await runner({
     files: compiled.files,
-    argv: languages[submission.language].run,
+    argv: compiled.run,
     stdin: submission.stdin,
-    limits: config.limits,
+    limits: runLimits(submission.language),
   });
   const stdout = truncate(result.stdout, MAX_RESULT_OUTPUT_BYTES);
   const stderr = truncate(result.stderr, MAX_RESULT_OUTPUT_BYTES);
@@ -83,9 +82,11 @@ export async function judgeSubmission(
 async function judgeSubmit(
   submission: Extract<NewSubmission, { mode: "submit" }>,
   files: Files,
+  argv: string[],
   onProgress: (progress: SubmitProgress) => void,
   runner: Runner,
 ): Promise<SubmitModeResult> {
+  const limits = runLimits(submission.language);
   const testCases = await getTestCases(submission.cpid, submission.testCasesUrl);
   const total = testCases.length;
   const cases: CaseResult[] = [];
@@ -95,9 +96,9 @@ async function judgeSubmit(
   for (const testCase of testCases) {
     const result = await runner({
       files,
-      argv: languages[submission.language].run,
+      argv,
       stdin: await readFile(testCase.inPath, "utf8"),
-      limits: config.limits,
+      limits,
     });
 
     let verdict: CaseVerdict;

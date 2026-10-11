@@ -1,5 +1,5 @@
 import { execFile } from "node:child_process";
-import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdtemp, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { parseMeta, toRunResult } from "./meta.ts";
@@ -7,7 +7,7 @@ import type { Runner } from "./types.ts";
 
 // Submissions run one at a time, so a single box is enough.
 const BOX = ["--cg", "--box-id=0"];
-const MAX_PROCESSES = 16;
+const MAX_PROCESSES = 64;
 
 const STDIN = ".stdin";
 const STDOUT = ".stdout";
@@ -41,6 +41,8 @@ export const runIsolated: Runner = async ({ files, argv, stdin, limits, collect 
       `--stderr=${STDERR}`,
       // g++ needs PATH to find its assembler and linker.
       "--env=PATH=/usr/bin:/bin",
+      // Ubuntu's JDK symlinks jvm.cfg into /etc.
+      "--dir=/etc/java-11-openjdk:maybe",
       "--run",
       "--",
       ...argv,
@@ -57,8 +59,13 @@ export const runIsolated: Runner = async ({ files, argv, stdin, limits, collect 
 
     const result = toRunResult(meta, stdout.toString(), stderr.toString(), outputLimited);
     if (collect) {
-      const collected = await readFile(join(box, collect)).catch(() => undefined);
-      if (collected) result.collected = collected;
+      result.collected = {};
+      for (const entry of await readdir(box, { withFileTypes: true })) {
+        // isFile() skips symlinks, which could point outside the box.
+        if (entry.isFile() && collect.test(entry.name)) {
+          result.collected[entry.name] = await readFile(join(box, entry.name));
+        }
+      }
     }
     return result;
   } finally {

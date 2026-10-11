@@ -7,7 +7,4 @@ const monacoLanguageMap = {
   java: 'java'
 }
 
-// Languages the judge can run; the others are only listed in the selector.
-const SUPPORTED_LANGUAGES = ['python3', 'cpp'];
-
-export {JUDGE_API_URL, JUDGE_POLL_DELAY, monacoLanguageMap, SUPPORTED_LANGUAGES };
+export {JUDGE_API_URL, JUDGE_POLL_DELAY, monacoLanguageMap };

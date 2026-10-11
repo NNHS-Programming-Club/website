@@ -6,7 +6,9 @@ import { verdictOf } from "./verdict.ts";
 
 export type Files = Record<string, string | Buffer>;
 
-export type CompileResult = { ok: true; files: Files } | { ok: false; compileOutput: string };
+export type CompileResult =
+  | { ok: true; files: Files; run: string[] }
+  | { ok: false; compileOutput: string };
 
 // Returns the files to put in the box for every run.
 export async function compile(
@@ -14,9 +16,9 @@ export async function compile(
   code: string,
   runner: Runner,
 ): Promise<CompileResult> {
-  const { source, compile } = languages[language];
+  const { source, compile, run } = languages[language].program(code);
   const files: Files = { [source]: code };
-  if (!compile) return { ok: true, files };
+  if (!compile) return { ok: true, files, run };
 
   const result = await runner({
     files,
@@ -25,8 +27,9 @@ export async function compile(
     limits: config.compileLimits,
     collect: compile.output,
   });
-  if (verdictOf(result) !== "OK" || !result.collected) {
+  const collected = result.collected ?? {};
+  if (verdictOf(result) !== "OK" || Object.keys(collected).length === 0) {
     return { ok: false, compileOutput: result.stderr };
   }
-  return { ok: true, files: { [compile.output]: result.collected } };
+  return { ok: true, files: collected, run };
 }

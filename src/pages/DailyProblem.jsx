@@ -1,14 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './DailyProblem.css';
 import { runCode, submitCode } from '../api/judge-api';
-import { SUPPORTED_LANGUAGES } from '../constants';
 import CodeEditor from '../components/DailyProblem/CodeEditor';
 import ResizeBar from '../components/DailyProblem/ResizeBar';
 import { getDailyProblem } from '../firebase/auth';
 import { useAuth } from '../contexts/authContext';
 import { useNavigate } from 'react-router-dom';
-
-const UNSUPPORTED_LANGUAGE_MESSAGE = 'This language is not supported yet. Please use Python 3 or C++ for now.';
 
 export default function DailyProblem() {
   // State management
@@ -144,10 +141,6 @@ export default function DailyProblem() {
       setOutput('Please enter some code to run.');
       return;
     }
-    if (!SUPPORTED_LANGUAGES.includes(language)) {
-      setOutput(UNSUPPORTED_LANGUAGE_MESSAGE);
-      return;
-    }
 
     setIsRunning(true);
     setError(null);
@@ -169,10 +162,6 @@ export default function DailyProblem() {
   const handleSubmitCode = async () => {
     if (!code.trim()) {
       setOutput('Please enter some code to submit.');
-      return;
-    }
-    if (!SUPPORTED_LANGUAGES.includes(language)) {
-      setOutput(UNSUPPORTED_LANGUAGE_MESSAGE);
       return;
     }
 

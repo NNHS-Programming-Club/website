@@ -37,9 +37,9 @@ npm run typecheck    # types are not checked when the code runs
 { "mode": "submit", "language": "cpp", "code": "...", "cpid": 1234 }
 ```
 
-- `language` is `python3` or `cpp` (compiled with `g++ -O2 -std=c++17`); `code` is limited to 64KB and `stdin` to 1MB.
+- `language` is `python3`, `cpp` (compiled with `g++ -O2 -std=c++17`), or `java` (OpenJDK 11, `main` in the public class); `code` is limited to 64KB and `stdin` to 1MB.
 - `status` is `queued`, `running`, `done`, or `error` (the judge itself failed). Submissions run one at a time.
-- Verdicts: `OK`, `AC`, `WA`, `TLE`, `MLE`, `RE`, `CE`. Limits: 4s CPU, 128MB.
+- Verdicts: `OK`, `AC`, `WA`, `TLE`, `MLE`, `RE`, `CE`. Limits: 2s CPU for `cpp`, 4s for the others; 128MB.
 - Run result: `{ verdict, stdout, stderr, timeMs, memoryKb, truncated }`
 - Submit result: `{ verdict, total, passed, cases, firstFailure }`; while running, `{ total, cases }` so far.
 - When the code does not compile, the result in both modes is `{ verdict: "CE", compileOutput }`.

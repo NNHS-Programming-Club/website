@@ -10,6 +10,12 @@ source ~/.bashrc
 nvm install 22
 ```
 
+Install the compilers and interpreters the judge runs:
+
+```bash
+sudo apt install -y g++ python3 openjdk-11-jdk-headless
+```
+
 Install isolate v2:
 
 ```bash

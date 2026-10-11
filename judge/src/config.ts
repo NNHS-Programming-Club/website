@@ -11,16 +11,16 @@ export const config = {
   // An absolute path: isolate does not search PATH.
   pythonBin: "/usr/bin/python3",
   gxxBin: "/usr/bin/g++",
+  javaHome: "/usr/lib/jvm/java-11-openjdk-amd64",
+  // Time limits are per language, in languages.ts.
   limits: {
-    cpuSeconds: 4,
-    wallSeconds: 8,
     memoryKb: 131072,
     outputKb: 1024,
   },
   // outputKb also caps the binary size.
   compileLimits: {
-    cpuSeconds: 10,
-    wallSeconds: 20,
+    cpuSeconds: 30,
+    wallSeconds: 60,
     memoryKb: 524288,
     outputKb: 65536,
   },

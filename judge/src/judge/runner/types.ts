@@ -11,8 +11,8 @@ export type RunRequest = {
   argv: string[];
   stdin: string;
   limits: RunLimits;
-  // Read back into `collected`.
-  collect?: string;
+  // Matching files are read back into `collected`.
+  collect?: RegExp;
 };
 
 export type RunStatus = "exited" | "signaled" | "timeout" | "memory_limit" | "output_limit";
@@ -25,7 +25,7 @@ export type RunResult = {
   memoryKb: number;
   stdout: string;
   stderr: string;
-  collected?: Buffer;
+  collected?: Record<string, Buffer>;
 };
 
 export type Runner = (request: RunRequest) => Promise<RunResult>;
