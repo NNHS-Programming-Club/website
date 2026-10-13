@@ -28,8 +28,8 @@ npm run typecheck    # types are not checked when the code runs
 
 The `judge-deploy` GitHub Actions workflow deploys to `/opt/nnhs-prog-club-judge` on the server and restarts `nnhs-prog-club-judge-api`, on every push to `main` that touches `judge/` or by hand from the Actions tab.
 
-- Repository secrets: `DEPLOY_HOST`, `DEPLOY_USER`, `DEPLOY_SSH_KEY`.
-- `deploy/` holds the systemd unit and the Caddyfile, installed on the server once by hand.
+- Repository secrets: `DEPLOY_HOST`, `DEPLOY_USER`, `DEPLOY_SSH_KEY`, `FIREBASE_SERVICE_ACCOUNT` (the service account key JSON).
+- The workflow installs `deploy/api.env` and the key into `/etc/nnhs-prog-club-judge/`. The systemd unit and the Caddyfile in `deploy/` are installed on the server once by hand.
 
 ## API
 

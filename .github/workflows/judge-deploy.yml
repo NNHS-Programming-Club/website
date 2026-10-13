@@ -60,12 +60,34 @@ jobs:
             --exclude test \
             judge/ "$TARGET:/opt/nnhs-prog-club-judge/"
 
-      - name: Install, restart, and check
+      - name: Install and configure
         run: |
           ssh "$TARGET" 'bash -se' <<'EOF'
           set -euo pipefail
-          cd /opt/nnhs-prog-club-judge
+          name=nnhs-prog-club-judge
+          cd /opt/$name
           npm ci --omit=dev
+          id -u $name >/dev/null 2>&1 || sudo useradd --system --no-create-home --shell /usr/sbin/nologin $name
+          sudo install -d /etc/$name
+          sudo install -d -o $name /var/cache/$name
+          sudo install -m 644 deploy/api.env /etc/$name/api.env
+          EOF
+
+      - name: Upload the Firebase key
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          test -n "$FIREBASE_SERVICE_ACCOUNT"
+          printf '%s\n' "$FIREBASE_SERVICE_ACCOUNT" | ssh "$TARGET" '
+            set -e
+            key=/etc/nnhs-prog-club-judge/serviceAccountKey.json
+            sudo sh -c "umask 077 && cat > $key"
+            sudo chown nnhs-prog-club-judge: $key'
+
+      - name: Restart and check
+        run: |
+          ssh "$TARGET" 'bash -se' <<'EOF'
+          set -euo pipefail
           sudo systemctl restart nnhs-prog-club-judge-api
           curl -fsS --retry 10 --retry-delay 2 --retry-connrefused http://127.0.0.1:8080/healthz
           EOF
