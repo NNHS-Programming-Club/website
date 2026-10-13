@@ -1,0 +1,71 @@
+name: judge-deploy
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - judge/**
+      - .github/workflows/judge-deploy.yml
+  workflow_dispatch:
+
+concurrency:
+  group: judge-deploy
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: judge
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: judge/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+
+  deploy:
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    env:
+      TARGET: ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up SSH
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          echo 'StrictHostKeyChecking accept-new' > ~/.ssh/config
+
+      - name: Copy judge/ to the server
+        run: |
+          rsync -az --delete \
+            --exclude node_modules \
+            --exclude .env \
+            --exclude cache \
+            --exclude serviceAccountKey.json \
+            --exclude test \
+            judge/ "$TARGET:/opt/nnhs-prog-club-judge/"
+
+      - name: Install, restart, and check
+        run: |
+          ssh "$TARGET" 'bash -se' <<'EOF'
+          set -euo pipefail
+          cd /opt/nnhs-prog-club-judge
+          npm ci --omit=dev
+          sudo systemctl restart nnhs-prog-club-judge-api
+          curl -fsS --retry 10 --retry-delay 2 --retry-connrefused http://127.0.0.1:8080/healthz
+          EOF

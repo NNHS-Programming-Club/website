@@ -1,0 +1,15 @@
+[Unit]
+Description=NNHS Programming Club Judge API
+After=network-online.target isolate.service
+Wants=network-online.target isolate.service
+
+[Service]
+User=nnhs-prog-club-judge
+WorkingDirectory=/opt/nnhs-prog-club-judge
+EnvironmentFile=/etc/nnhs-prog-club-judge/api.env
+ExecStart=/usr/bin/node src/api/server.ts
+Restart=always
+# No NoNewPrivileges: isolate is setuid root.
+
+[Install]
+WantedBy=multi-user.target

@@ -24,6 +24,13 @@ npm test
 npm run typecheck    # types are not checked when the code runs
 ```
 
+## Deploy
+
+The `judge-deploy` GitHub Actions workflow deploys to `/opt/nnhs-prog-club-judge` on the server and restarts `nnhs-prog-club-judge-api`, on every push to `main` that touches `judge/` or by hand from the Actions tab.
+
+- Repository secrets: `DEPLOY_HOST`, `DEPLOY_USER`, `DEPLOY_SSH_KEY`.
+- `deploy/` holds the systemd unit and the Caddyfile, installed on the server once by hand.
+
 ## API
 
 | Endpoint | Description |

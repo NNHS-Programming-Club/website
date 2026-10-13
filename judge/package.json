@@ -1,5 +1,5 @@
 {
-  "name": "nnhs-judge",
+  "name": "nnhs-prog-club-judge",
   "version": "0.1.0",
   "private": true,
   "description": "Judge REST API for the NNHS Programming Club website",
