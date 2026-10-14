@@ -12,7 +12,7 @@ npm install
 cp .env.example .env
 ```
 
-Submit mode needs a Firebase service account key at `judge/serviceAccountKey.json`.
+Submit mode needs a Firebase service account key at `judge/serviceAccountKey.json`. Use the dev project's key (`nnhs-prog-club-dev`): the key decides which project the judge reads and writes, and the production key belongs only in the `FIREBASE_SERVICE_ACCOUNT` secret.
 
 Needs Linux (WSL 2 on Windows) with isolate: see [setup-isolate.md](setup-isolate.md).
 
