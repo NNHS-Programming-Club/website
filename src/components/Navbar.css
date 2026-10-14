@@ -21,6 +21,20 @@
   width: 30px;
 }
 
+.nav-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: #e48257;
+  color: #f2edd7;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
 .navbar-brand {
   display: flex;
   align-items: center;

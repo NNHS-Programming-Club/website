@@ -16,8 +16,24 @@ export default function Navbar() {
     setDarkMode(!darkMode);
   };
 
-  const { userLoggedIn } = useAuth();
+  const { userLoggedIn, currentUser, userProfile } = useAuth();
   const navigate = useNavigate();
+  const [avatarFailed, setAvatarFailed] = useState(false);
+
+  const photoURL = avatarFailed ? null : currentUser?.photoURL;
+  const nameParts = (userProfile?.name || currentUser?.displayName || currentUser?.email || "")
+    .trim()
+    .split(/\s+/);
+  const initials = (
+    nameParts.length > 1
+      ? nameParts[0][0] + nameParts[nameParts.length - 1][0]
+      : nameParts[0].slice(0, 1)
+  ).toUpperCase();
+
+  const handleSignOut = async () => {
+    await doSignOut();
+    navigate("/");
+  };
 
   useEffect(() => {
     const htmlElement = document.querySelector("html");
@@ -78,20 +94,51 @@ export default function Navbar() {
               </li>
             </ul>
 
-            {/* Login / Sign Up Buttons */}
+            {/* Profile / Log Out when logged in, Login / Sign Up otherwise */}
             <ul className="navbar-nav d-flex flex-row align-items-center mt-2 mt-lg-0">
-              <li className="nav-item me-2">
-                <Link to="/login" className="nav-link">
-                  Log In
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link to="/register">
-                  <button type="button" className="btn btn-primary">
-                    Sign Up
-                  </button>
-                </Link>
-              </li>
+              {userLoggedIn ? (
+                <>
+                  <li className="nav-item me-2 align-self-center">
+                    <Link to="/profile" title="Profile" className="d-flex text-decoration-none">
+                      {photoURL ? (
+                        <img
+                          className="nav-avatar"
+                          src={photoURL}
+                          alt="Profile"
+                          referrerPolicy="no-referrer"
+                          onError={() => setAvatarFailed(true)}
+                        />
+                      ) : (
+                        <span className="nav-avatar">{initials}</span>
+                      )}
+                    </Link>
+                  </li>
+                  <li className="nav-item align-self-center">
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={handleSignOut}
+                    >
+                      Log Out
+                    </button>
+                  </li>
+                </>
+              ) : (
+                <>
+                  <li className="nav-item me-2">
+                    <Link to="/login" className="nav-link">
+                      Log In
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link to="/register">
+                      <button type="button" className="btn btn-primary">
+                        Sign Up
+                      </button>
+                    </Link>
+                  </li>
+                </>
+              )}
             </ul>
 
             {/* 4 Icons */}
