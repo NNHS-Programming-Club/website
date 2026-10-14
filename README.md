@@ -1,6 +1,12 @@
 # Programming Club Website
 
-Uses react, react-dom, react-router-dom
-use `npm install` to install these dependencies
+```bash
+npm install
+npm start    # dev server at localhost:3000
+```
 
-to preview the website use `npm run start`
+## Deploy
+
+Pushing to `main` runs the `website-deploy` workflow, which builds the app and copies it to the server.
+
+The judge API URL is set in `.env.development` and `.env.production`.

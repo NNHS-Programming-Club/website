@@ -1,0 +1,54 @@
+name: website-deploy
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - src/**
+      - public/**
+      - package.json
+      - package-lock.json
+      - .env.production
+      - .github/workflows/website-deploy.yml
+  workflow_dispatch:
+
+concurrency:
+  group: website-deploy
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    env:
+      TARGET: ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+
+      - name: Build
+        env:
+          # CI=true makes react-scripts fail the build on ESLint warnings.
+          CI: false
+        run: npm run build
+
+      - name: Set up SSH
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          echo 'StrictHostKeyChecking accept-new' > ~/.ssh/config
+
+      - name: Copy build/ to the server
+        run: |
+          ssh "$TARGET" 'sudo install -d -o "$USER" /var/www/nnhs-prog-club-website'
+          rsync -az --delete build/ "$TARGET:/var/www/nnhs-prog-club-website/"

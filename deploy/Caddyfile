@@ -1,0 +1,14 @@
+nnhsprogramming.club {
+	root * /var/www/nnhs-prog-club-website
+	encode gzip
+	try_files {path} /index.html
+	file_server
+}
+
+www.nnhsprogramming.club {
+	redir https://nnhsprogramming.club{uri} permanent
+}
+
+judge.nnhsprogramming.club {
+	reverse_proxy 127.0.0.1:8080
+}

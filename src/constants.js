@@ -1,4 +1,4 @@
-const JUDGE_API_URL = 'http://localhost:8080';
+const JUDGE_API_URL = process.env.REACT_APP_JUDGE_API_URL;
 const JUDGE_POLL_DELAY = 500;
 
 const monacoLanguageMap = {
