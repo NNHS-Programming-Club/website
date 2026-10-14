@@ -38,6 +38,8 @@ The `judge-deploy` GitHub Actions workflow deploys to `/opt/nnhs-prog-club-judge
 | `GET /healthz` | Liveness check |
 | `POST /submissions` | Queue a submission; returns `202 { "id" }` |
 | `GET /submissions/:id` | `{ "id", "mode", "status", "result" }` |
+| `GET /submissions/latest?cpid=1234` | `{ "submission": { "language", "code" } }` for the caller's last submit on that problem, or `null` |
+| `GET /leaderboard` | `{ "entries": [{ "name", "points" }] }`, highest first, without users at 0 |
 
 ```json
 { "mode": "run", "language": "python3", "code": "print(input())", "stdin": "hello\n" }
@@ -51,6 +53,7 @@ The `judge-deploy` GitHub Actions workflow deploys to `/opt/nnhs-prog-club-judge
 - Submit result: `{ verdict, total, passed, cases, firstFailure }`; while running, `{ total, cases }` so far.
 - When the code does not compile, the result in both modes is `{ verdict: "CE", compileOutput }`.
 - A submit looks the problem up by `cpid` in Firestore: `404` if it is unknown, `422` if it reads and writes files. Its test cases are downloaded from usaco.org once and cached.
+- Every finished submit is saved to Firestore under `users/<uid>/submissions`. A user's `points` is the sum, over problems, of the most cases any of their submits passed.
 - Errors are `{ "error": { "code", "message" } }`.
 
 ```bash

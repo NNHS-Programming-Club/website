@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './DailyProblem.css';
-import { runCode, submitCode } from '../api/judge-api';
+import { runCode, submitCode, getLastSubmission } from '../api/judge-api';
 import CodeEditor from '../components/DailyProblem/CodeEditor';
 import ResizeBar from '../components/DailyProblem/ResizeBar';
 import { getDailyProblem } from '../firebase/auth';
@@ -74,6 +74,28 @@ export default function DailyProblem() {
 
     fetchDailyProblem();
   }, []);
+
+  // Start from the user's last submission for this problem
+  const codeRef = useRef(code);
+  codeRef.current = code;
+
+  useEffect(() => {
+    if (!dailyProblem || !userLoggedIn) return;
+
+    let cancelled = false;
+    getLastSubmission(dailyProblem.cpid)
+      .then(last => {
+        // Leave the editor alone if the user has already typed something.
+        if (cancelled || !last || codeRef.current) return;
+        setLanguage(last.language);
+        setCode(last.code);
+      })
+      .catch(error => console.error('Error fetching last submission:', error));
+
+    return () => {
+      cancelled = true;
+    };
+  }, [dailyProblem, userLoggedIn]);
 
   // Handle window resize to update constraints
   useEffect(() => {
@@ -198,9 +220,6 @@ export default function DailyProblem() {
         }
         setOutput(prev => prev + summary);
       }
-
-      // TODO add submission stats to firebase
-
     } catch (error) {
       console.error('Error submitting code:', error);
       setError(error.message);

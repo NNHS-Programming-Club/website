@@ -1,0 +1,13 @@
+.leaderboard {
+  max-width: 720px;
+  padding-top: 24px;
+}
+
+.leaderboard-hint {
+  opacity: 0.8;
+}
+
+.leaderboard-table td:first-child,
+.leaderboard-table th:first-child {
+  width: 64px;
+}

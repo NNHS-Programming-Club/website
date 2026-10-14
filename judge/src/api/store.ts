@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { judgeSubmission } from "../judge/judge.ts";
 import type { JudgeResult, SubmitProgress } from "../judge/judge.ts";
 import type { Language } from "../judge/languages.ts";
+import type { SaveSubmission } from "./results.ts";
 
 export type NewSubmission =
   | { mode: "run"; language: Language; code: string; stdin: string }
@@ -22,6 +23,7 @@ type Stored = {
   submission: NewSubmission;
   status: Status;
   result: SubmissionView["result"];
+  save?: SaveSubmission;
 };
 
 const submissions = new Map<string, Stored>();
@@ -30,9 +32,13 @@ const submissions = new Map<string, Stored>();
 let tail: Promise<void> = Promise.resolve();
 
 // Async so a real queue can replace the Map.
-export async function create(uid: string, submission: NewSubmission): Promise<string> {
+export async function create(
+  uid: string,
+  submission: NewSubmission,
+  save?: SaveSubmission,
+): Promise<string> {
   const id = randomUUID();
-  const stored: Stored = { uid, submission, status: "queued", result: null };
+  const stored: Stored = { uid, submission, status: "queued", result: null, save };
   submissions.set(id, stored);
   tail = tail.then(() => execute(id, stored));
   return id;
@@ -47,9 +53,24 @@ export async function get(id: string, uid: string): Promise<SubmissionView | und
 async function execute(id: string, stored: Stored) {
   stored.status = "running";
   try {
-    stored.result = await judgeSubmission(stored.submission, (progress) => {
+    const { submission } = stored;
+    const result = await judgeSubmission(submission, (progress) => {
       stored.result = progress;
     });
+    // Saved before the status is done, so a result the user sees is always recorded.
+    if (submission.mode === "submit" && stored.save) {
+      const counts = "passed" in result ? result : { passed: 0, total: 0 };
+      await stored.save({
+        uid: stored.uid,
+        cpid: submission.cpid,
+        language: submission.language,
+        code: submission.code,
+        verdict: result.verdict,
+        passed: counts.passed,
+        total: counts.total,
+      });
+    }
+    stored.result = result;
     stored.status = "done";
   } catch (err) {
     console.error(`submission ${id} failed:`, err);

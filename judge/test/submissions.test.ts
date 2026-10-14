@@ -16,6 +16,8 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{1
 const run = { mode: "run", language: "python3", code: "print(input())", stdin: "hello\n" };
 const submit = { mode: "submit", language: "python3", code: "print(1)", cpid: 1234 };
 
+const lastSubmission = { language: "cpp", code: "int main() {}" } as const;
+
 const FILE_IO_CPID = 5678;
 const getProblem: GetProblem = async (cpid) => {
   if (cpid !== submit.cpid && cpid !== FILE_IO_CPID) return undefined;
@@ -41,7 +43,14 @@ await writeFile(join(config.cacheDir, "1234", "1.out"), "1\n");
 test.after(() => rm(config.cacheDir, { recursive: true, force: true }));
 
 function setup(t: TestContext) {
-  const app = buildApp({ getProblem, verifyToken });
+  // The fakes keep the tests away from Firestore.
+  const app = buildApp({
+    getProblem,
+    verifyToken,
+    saveSubmission: async () => {},
+    getLastSubmission: async (uid, cpid) =>
+      uid === "uid-alice" && cpid === submit.cpid ? lastSubmission : undefined,
+  });
   t.after(() => app.close());
   return app;
 }
@@ -204,6 +213,56 @@ test("GET /submissions/:id returns 404 for an unknown id", async (t) => {
   });
 });
 
+test("GET /submissions/latest returns the user's last submission for the problem", async (t) => {
+  const app = setup(t);
+
+  const res = await app.inject({
+    method: "GET",
+    url: `/submissions/latest?cpid=${submit.cpid}`,
+    headers: alice,
+  });
+
+  assert.equal(res.statusCode, 200);
+  assert.deepEqual(res.json(), { submission: lastSubmission });
+});
+
+for (const [name, headers, cpid] of [
+  ["another user", bob, submit.cpid],
+  ["a problem never submitted", alice, 1],
+] as const) {
+  test(`GET /submissions/latest returns null for ${name}`, async (t) => {
+    const app = setup(t);
+
+    const res = await app.inject({
+      method: "GET",
+      url: `/submissions/latest?cpid=${cpid}`,
+      headers,
+    });
+
+    assert.equal(res.statusCode, 200);
+    assert.deepEqual(res.json(), { submission: null });
+  });
+}
+
+for (const [name, query] of [
+  ["a missing cpid", ""],
+  ["a non-numeric cpid", "?cpid=abc"],
+  ["a fractional cpid", "?cpid=1.5"],
+] as const) {
+  test(`GET /submissions/latest rejects ${name}`, async (t) => {
+    const app = setup(t);
+
+    const res = await app.inject({
+      method: "GET",
+      url: `/submissions/latest${query}`,
+      headers: alice,
+    });
+
+    assert.equal(res.statusCode, 400);
+    assert.equal(res.json().error.code, "invalid_request");
+  });
+}
+
 const rejectedHeaders: [string, Record<string, string>][] = [
   ["no token", {}],
   ["a non-Bearer header", { authorization: "Basic uid-alice" }],
@@ -223,6 +282,7 @@ for (const [name, headers] of rejectedHeaders) {
         url: "/submissions/0b0c6f0e-6c0f-4b53-9a52-0c6b7f0a3a51",
         headers,
       }),
+      await app.inject({ method: "GET", url: "/submissions/latest?cpid=1234", headers }),
     ];
 
     for (const res of responses) {

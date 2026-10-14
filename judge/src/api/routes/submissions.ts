@@ -3,6 +3,7 @@ import { requireAuth } from "../auth.ts";
 import type { VerifyToken } from "../auth.ts";
 import { sendError } from "../errors.ts";
 import type { GetProblem } from "../problems.ts";
+import type { GetLastSubmission, SaveSubmission } from "../results.ts";
 import { languages } from "../../judge/languages.ts";
 import type { Language } from "../../judge/languages.ts";
 import { create, get } from "../store.ts";
@@ -34,6 +35,13 @@ const bodySchema = {
   ],
 };
 
+// Type coercion is off, so the query value stays a string.
+const latestQuerySchema = {
+  type: "object",
+  required: ["cpid"],
+  properties: { cpid: { type: "string", pattern: "^\\d{1,9}$" } },
+};
+
 type SubmissionBody = {
   mode: "run" | "submit";
   language: Language;
@@ -44,7 +52,12 @@ type SubmissionBody = {
 
 export async function submissionsRoutes(
   app: FastifyInstance,
-  opts: { getProblem: GetProblem; verifyToken: VerifyToken },
+  opts: {
+    getProblem: GetProblem;
+    saveSubmission: SaveSubmission;
+    getLastSubmission: GetLastSubmission;
+    verifyToken: VerifyToken;
+  },
 ) {
   app.addHook("onRequest", requireAuth(opts.verifyToken));
 
@@ -80,14 +93,21 @@ export async function submissionsRoutes(
         );
       }
 
-      const id = await create(request.uid, {
-        mode,
-        language,
-        code,
-        cpid,
-        testCasesUrl: problem.testCasesUrl,
-      });
+      const id = await create(
+        request.uid,
+        { mode, language, code, cpid, testCasesUrl: problem.testCasesUrl },
+        opts.saveSubmission,
+      );
       return reply.code(202).send({ id });
+    },
+  );
+
+  app.get<{ Querystring: { cpid: string } }>(
+    "/submissions/latest",
+    { schema: { querystring: latestQuerySchema } },
+    async (request) => {
+      const submission = await opts.getLastSubmission(request.uid, Number(request.query.cpid));
+      return { submission: submission ?? null };
     },
   );
 

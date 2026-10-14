@@ -17,6 +17,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import { AuthProvider } from './contexts/authContext';
 import DailyProblem from './pages/DailyProblem';
+import Leaderboard from './pages/Leaderboard';
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
             <Route path = "/members" element = {<Members />} />
             <Route path = "/events" element = {<Events />} />
             <Route path = "/daily-problem" element = {<DailyProblem />} />
+            <Route path = "/leaderboard" element = {<Leaderboard />} />
             <Route path = "/login" element = {<Login />} />
             <Route path = "/register" element = {<Register />} />
             <Route path = "/profile" element = {<Profile />} />

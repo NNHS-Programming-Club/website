@@ -92,6 +92,11 @@ export default function Navbar() {
                   Daily Problem
                 </Link>
               </li>
+              <li className="nav-item">
+                <Link to="/leaderboard" className="nav-link">
+                  Leaderboard
+                </Link>
+              </li>
             </ul>
 
             {/* Profile / Log Out when logged in, Login / Sign Up otherwise */}

@@ -61,3 +61,14 @@ export async function submitCode(code, cpid, language, onProgress) {
 
   return waitForResult(id, onProgress);
 }
+
+// Resolves to { language, code }, or null when the user never submitted this problem.
+export async function getLastSubmission(cpid) {
+  const { submission } = await request(`/submissions/latest?cpid=${cpid}`);
+  return submission;
+}
+
+export async function getLeaderboard() {
+  const { entries } = await request('/leaderboard');
+  return entries;
+}
